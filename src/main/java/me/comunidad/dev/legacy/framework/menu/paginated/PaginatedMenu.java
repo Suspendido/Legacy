@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +36,15 @@ public class PaginatedMenu extends Menu {
 
         // Paginated buttons
         for (int i = 1; i < 8; i++) {
-            inventory.setItem(i, new ItemBuilder(ItemUtils.getMatItem(getConfig().getString("PAGINATED_MENUS.FILLER.MATERIAL")))
+            ItemStack item = new ItemBuilder(ItemUtils.getMatItem(getConfig().getString("PAGINATED_MENUS.FILLER.MATERIAL")))
                     .setName(getConfig().getString("PAGINATED_MENUS.FILLER.NAME"))
                     .data(getManager(), getConfig().getInt("PAGINATED_MENUS.FILLER.DATA"))
                     .setLore(getConfig().getStringList("PAGINATED_MENUS.FILLER.LORE"))
-                    .toItemStack());
+                    .toItemStack();
+            ItemMeta meta = item.getItemMeta();
+            meta.setHideTooltip(true);
+            item.setItemMeta(meta);
+            inventory.setItem(i, item);
         }
 
         for (Map.Entry<Integer, Button> entry : buttons.entrySet()) {
@@ -119,11 +124,15 @@ public class PaginatedMenu extends Menu {
 
                 @Override
                 public ItemStack getItemStack() {
-                    return new ItemBuilder(ItemUtils.getMatItem(getConfig().getString("PAGINATED_MENUS.FILLER.MATERIAL")))
+                    ItemStack item = new ItemBuilder(ItemUtils.getMatItem(getConfig().getString("PAGINATED_MENUS.FILLER.MATERIAL")))
                             .setName(getConfig().getString("PAGINATED_MENUS.FILLER.NAME"))
                             .data(getManager(), getConfig().getInt("PAGINATED_MENUS.FILLER.DATA"))
                             .setLore(getConfig().getStringList("PAGINATED_MENUS.FILLER.LORE"))
                             .toItemStack();
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setHideTooltip(true);
+                    item.setItemMeta(meta);
+                    return item;
                 }
             });
         }
