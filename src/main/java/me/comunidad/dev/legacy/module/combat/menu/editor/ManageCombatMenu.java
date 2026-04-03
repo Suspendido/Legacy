@@ -3,6 +3,7 @@ package me.comunidad.dev.legacy.module.combat.menu.editor;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
 import me.comunidad.dev.legacy.framework.menu.button.Button;
 import me.comunidad.dev.legacy.framework.menu.paginated.PaginatedMenu;
+import me.comunidad.dev.legacy.module.combat.menu.MainMenu;
 import me.comunidad.dev.legacy.module.lang.Lang;
 import me.comunidad.dev.legacy.module.lang.LangManager;
 import me.comunidad.dev.legacy.utils.ItemBuilder;
@@ -30,6 +31,7 @@ public class ManageCombatMenu extends PaginatedMenu {
                 manager.getInstance().getLangManager().of(Lang.MANAGE_MENU_TITLE),
                 3*9, true
         );
+        this.defaultButtons.put(5, backButton(() -> new MainMenu(getManager(), player).open()));
     }
 
     private LangManager lang() {
@@ -78,9 +80,11 @@ public class ManageCombatMenu extends PaginatedMenu {
                         getInstance().getProfileManager().activate(id);
                         sendMessage(player, lang().of(Lang.MANAGE_ACTIVATED, id));
                         new ManageCombatMenu(getManager(), player).open();
+                        playNeutral(player);
                         return;
                     }
                     new ProfileEditorMenu(getManager(), player, id).open();
+                    playNeutral(player);
                 }
             });
         }
@@ -103,5 +107,23 @@ public class ManageCombatMenu extends PaginatedMenu {
         }
 
         return buttons;
+    }
+
+    private Button backButton(Runnable action) {
+        return new Button() {
+            @Override
+            public ItemStack getItemStack() {
+                return new ItemBuilder(Material.ARROW)
+                        .setName(lang().of(Lang.BACK_BUTTON_NAME))
+                        .setLore(lang().loreOf(Lang.BACK_BUTTON_LORE))
+                        .toItemStack();
+            }
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                e.setCancelled(true);
+                playNeutral(player);
+                action.run();
+            }
+        };
     }
 }
