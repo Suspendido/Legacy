@@ -25,6 +25,7 @@ profiles:
         player: 19
         mob: 10
       attack-speed: 1024.0
+      block-hit: true
     
     tool-damage:
       swords:
