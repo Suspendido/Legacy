@@ -3,7 +3,6 @@ package me.comunidad.dev.legacy.module.combat.menu.editor;
 import me.comunidad.dev.legacy.framework.menu.Menu;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
 import me.comunidad.dev.legacy.framework.menu.button.Button;
-import me.comunidad.dev.legacy.module.combat.menu.CombatSettingsMenu;
 import me.comunidad.dev.legacy.module.lang.Lang;
 import me.comunidad.dev.legacy.module.lang.LangManager;
 import me.comunidad.dev.legacy.utils.ItemBuilder;
@@ -80,6 +79,7 @@ public class ProfileEditorMenu extends Menu {
             @Override
             public void onClick(InventoryClickEvent e) {
                 e.setCancelled(true);
+                playNeutral(player);
                 new CombatSettingsMenu(getManager(), player, profileId).open();
             }
         });
