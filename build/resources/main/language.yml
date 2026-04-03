@@ -1,0 +1,5 @@
+GLOBAL_COMMANDS:
+  PLAYER_NOT_FOUND: "&cPlayer not found."
+  PLAYER_ONLY: "&cThis command can only be used by players."
+  INSUFFICIENT_PERMISSION: "&cYou do not have permission to use this command."
+  NOT_VALID_NUMBER: "&cThat is not a valid number."

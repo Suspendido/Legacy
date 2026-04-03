@@ -1,0 +1,119 @@
+# lang/en_lang.yml
+# English language file — default language.
+# Supports color codes (&a, &c, etc.) and placeholders {0}, {1}, ...
+# Multi-line lore values use \n as separator inside a single string.
+
+generic:
+  back-button:
+    name: "&7&lBack"
+    lore: "&7Return to previous menu"
+  no-profiles-found:
+    name: "&cNo profiles found"
+    lore: "&7Add profiles in &fprofiles.yml"
+
+menus:
+  main:
+    title: "&8» &lCombat Editor"
+    profiles:
+      name: "&b&lCombat Profiles"
+      lore: "&7Manage knockback, damage,\n&7cooldowns and more per profile.\n\n&eClick to open"
+    damage:
+      name: "&c&lTool Damage"
+      lore: "&7Configure damage values\n&7for each weapon type.\n\n&eClick to open"
+    languages:
+      name: "&a&lLanguages"
+      lore: "&7Choose the active language\n&7for server messages.\n\n&eClick to open"
+  
+  manage:
+    title: "&8» &lCombat Profiles"
+    status:
+      active: "&aActive ✔"
+      inactive: "&7Inactive"
+    profile:
+      lore:
+        id: "&7ID: &f{0}"
+        status: "&7Status: {0}"
+        edit: "&eLeft-click &7to edit"
+        activate: "&eRight-click &7to activate"
+    activated: "&aActivated profile &f{0}"
+  
+  profile-editor:
+    title: "&8» &lProfile: &b{0}"
+    knockback:
+      name: "&e&lKnockback"
+      lore: "&7Horizontal: &f{0}\n&7Vertical:   &f{1}\n\n&eClick to edit"
+    combat:
+      name: "&c&lCombat Settings"
+      lore: "&7No-Damage Ticks: &f{0}\n\n&eClick to edit"
+    damage:
+      name: "&6&lTool Damage"
+      lore: "&7Configure per-weapon damage\n&7values for this profile.\n\n&eClick to edit"
+    projectiles:
+      name: "&d&lProjectile Physics"
+      lore: "&7Speed Multiplier: &f{0}\n&7Gravity: &f{1}\n\n&eClick to edit"
+    pearl:
+      name: "&5&lEnder Pearl"
+      lore: "&7Damage on land: &f{0}\n&7Cooldown (ticks): &f{1}\n\n&eClick to edit"
+    potion:
+      name: "&b&lPotion Settings"
+      lore: "&7Speed Multiplier: &f{0}\n&7Self Intensity Boost: &f{1}\n\n&eClick to edit"
+  
+  kb-editor:
+    title: "&8» &lKnockback: &e{0}"
+    current: "&7Current: &a{0}"
+    range: "&7Min: &f{0}  Max: &f{1}"
+    hint:
+      left: "&fLeft-click&7: +{0}"
+      right: "&fRight-click&7: -{0}"
+      shift-left: "&fShift+Left&7: +{0}"
+      shift-right: "&fShift+Right&7: -{0}"
+    updated: "&aSet &e{0} &ato &f{1}"
+  
+  combat-editor:
+    title: "&8» &lCombat: &c{0}"
+    updated: "&aSet &c{0} &ato &f{1}"
+  
+  damage:
+    title:
+      global: "&8» &lTool Damage (Global)"
+      profile: "&8» &lTool Damage: &6{0}"
+    current: "&7Damage: &a{0}"
+    updated: "&aSet &6{0} &adamage to &f{1}"
+  
+  proj-editor:
+    title: "&8» &lProjectiles: &d{0}"
+    updated: "&aSet &d{0} &ato &f{1}"
+  
+  pearl-editor:
+    title: "&8» &lPearl Settings: &5{0}"
+    updated: "&aUpdated &5{0}"
+    toggle:
+      on:  "&aEnabled"
+      off: "&cDisabled"
+  
+  potion-editor:
+    title: "&8» &lPotions: &b{0}"
+    updated: "&aSet &b{0} &ato &f{1}"
+  
+  languages:
+    title: "&8» &lLanguage Selection"
+    status:
+      active: "&aActive ✔"
+      inactive: "&7Inactive"
+    lore:
+      id: "&7ID: &f{0}"
+      status: "&7Status: {0}"
+      selected: "&7Already selected"
+      click: "&eClick to activate"
+    changed: "&aLanguage changed to &f{0}"
+  
+  value-editor:
+    title: "&8» &lEdit: &f{0}"
+    current: "&7Current: &a{0}"
+    range: "&7Min: &f{0}  Max: &f{1}"
+    step: "&7Step: &f{0}"
+    updated: "&aUpdated &f{0} &ato &f{1}"
+
+messages:
+  exploit:
+    invalid-pearl: "&cInvalid Pearl Location"
