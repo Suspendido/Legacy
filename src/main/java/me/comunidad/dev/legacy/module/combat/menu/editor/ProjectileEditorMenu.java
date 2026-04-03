@@ -79,8 +79,8 @@ public class ProjectileEditorMenu extends Menu {
                 public ItemStack getItemStack() {
                     double val = getProfilesConfig().getDouble(path);
                     List<String> lore = new ArrayList<>();
-                    lore.add(lang().of(Lang.KB_CURRENT_VALUE, round(val)));
-                    lore.add(lang().of(Lang.KB_RANGE, min, max));
+                    lore.add(lang().of(Lang.VALUE_CURRENT, round(val)));
+                    lore.add(lang().of(Lang.VALUE_RANGE, min, max));
                     lore.add("");
                     lore.add(lang().of(Lang.KB_HINT_LEFT, step));
                     lore.add(lang().of(Lang.KB_HINT_RIGHT, step));
@@ -107,7 +107,7 @@ public class ProjectileEditorMenu extends Menu {
                     getProfilesConfig().save();
                     getInstance().getProfileManager().reload();
                     update();
-                    sendMessage(player, lang().of(Lang.PROJ_UPDATED, label, next));
+                    sendMessage(player, lang().of(Lang.VALUE_UPDATED, label, next));
                     playNeutral(player);
                 }
             });

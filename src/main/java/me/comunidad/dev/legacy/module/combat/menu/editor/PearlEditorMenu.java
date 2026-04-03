@@ -75,16 +75,16 @@ public class PearlEditorMenu extends Menu {
                     double val = getProfilesConfig().getDouble(path);
                     List<String> lore = new ArrayList<>();
                     if (toggle) {
-                        lore.add("&7Currently: " + (val == 1 ? lang().of(Lang.PEARL_TOGGLE_ON) : lang().of(Lang.PEARL_TOGGLE_OFF)));
+                        lore.add(lang().of(Lang.VALUE_CURRENT) + (val == 1 ? lang().of(Lang.PEARL_TOGGLE_ON) : lang().of(Lang.PEARL_TOGGLE_OFF)));
                         lore.add("");
                         lore.add(lang().of(Lang.LANG_LORE_CLICK)); // reuse "click to activate"
                     } else {
-                        lore.add(lang().of(Lang.KB_CURRENT_VALUE, fmt(val, isInt)));
-                        lore.add(lang().of(Lang.KB_RANGE, fmt(min, isInt), fmt(max, isInt)));
+                        lore.add(lang().of(Lang.VALUE_CURRENT, fmt(val, isInt)));
+                        lore.add(lang().of(Lang.VALUE_RANGE, fmt(min, isInt), fmt(max, isInt)));
                         lore.add("");
-                        lore.add(lang().of(Lang.KB_HINT_LEFT,        1));
-                        lore.add(lang().of(Lang.KB_HINT_RIGHT,       1));
-                        lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT,  fmt(step, isInt)));
+                        lore.add(lang().of(Lang.KB_HINT_LEFT, 1));
+                        lore.add(lang().of(Lang.KB_HINT_RIGHT, 1));
+                        lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT, fmt(step, isInt)));
                         lore.add(lang().of(Lang.KB_HINT_SHIFT_RIGHT, fmt(step, isInt)));
                     }
                     return new ItemBuilder(mat).setName("&5" + label).setLore(lore).toItemStack();

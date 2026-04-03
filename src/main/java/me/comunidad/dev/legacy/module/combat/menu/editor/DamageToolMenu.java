@@ -123,7 +123,7 @@ public class DamageToolMenu extends Menu {
                     getProfilesConfig().save();
                     getInstance().getProfileManager().reload();
                     update();
-                    sendMessage(player, lang().of(Lang.DAMAGE_UPDATED, label, next));
+                    sendMessage(player, lang().of(Lang.VALUE_UPDATED, label, next));
                     playNeutral(player);
                 }
             });
