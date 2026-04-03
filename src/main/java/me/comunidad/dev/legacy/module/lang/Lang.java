@@ -21,6 +21,12 @@ public enum Lang {
     BACK_BUTTON_LORE("generic.back-button.lore", "&7Return to previous menu"),
     NO_PROFILES_FOUND_NAME("generic.no-profiles-found.name", "&cNo profiles found"),
     NO_PROFILES_FOUND_LORE("generic.no-profiles-found.lore", "&7Add profiles in &fprofiles.yml"),
+    VALUE_EDITOR_TITLE("menus.value-editor.title", "&8» &lEdit: &f{0}"),
+    VALUE_CURRENT("menus.value-editor.current", "&7Current: &a{0}"),
+    VALUE_RANGE("menus.value-editor.range","&7Min: &f{0}  Max: &f{1}"),
+    VALUE_STEP("menus.value-editor.step", "&7Step: &f{0}"),
+    VALUE_UPDATED("menus.value-editor.updated", "&aUpdated &f{0} &ato &f{1}"),
+    VALUE_TOGGLE("menus.value-editor.toggle", "&eClick &7to toggle"),
 
     // Main menu
     MAIN_MENU_TITLE("menus.main.title", "&8» &lCombat Editor"),
@@ -58,27 +64,21 @@ public enum Lang {
 
     // Knockback editor
     KB_EDITOR_TITLE("menus.kb-editor.title", "&8» &lKnockback: &e{0}"),
-    KB_CURRENT_VALUE("menus.kb-editor.current", "&7Current: &a{0}"),
-    KB_RANGE("menus.kb-editor.range", "&7Min: &f{0}  Max: &f{1}"),
     KB_HINT_LEFT("menus.kb-editor.hint.left", "&fLeft-click&7: +{0}"),
     KB_HINT_RIGHT("menus.kb-editor.hint.right", "&fRight-click&7: -{0}"),
     KB_HINT_SHIFT_LEFT("menus.kb-editor.hint.shift-left", "&fShift+Left&7: +{0}"),
     KB_HINT_SHIFT_RIGHT("menus.kb-editor.hint.shift-right", "&fShift+Right&7: -{0}"),
-    KB_UPDATED("menus.kb-editor.updated", "&aSet &e{0} &ato &f{1}"),
 
     // Combat settings editor
     COMBAT_EDITOR_TITLE("menus.combat-editor.title", "&8» &lCombat: &c{0}"),
-    COMBAT_UPDATED("menus.combat-editor.updated", "&aSet &c{0} &ato &f{1}"),
 
     // Damage tool menu
     DAMAGE_MENU_TITLE_GLOBAL("menus.damage.title.global", "&8» &lTool Damage (Global)"),
     DAMAGE_MENU_TITLE_PROFILE("menus.damage.title.profile", "&8» &lTool Damage: &6{0}"),
     DAMAGE_CURRENT("menus.damage.current", "&7Damage: &a{0}"),
-    DAMAGE_UPDATED("menus.damage.updated", "&aSet &6{0} &adamage to &f{1}"),
 
     // Projectile editor
     PROJ_EDITOR_TITLE("menus.proj-editor.title", "&8» &lProjectiles: &d{0}"),
-    PROJ_UPDATED("menus.proj-editor.updated", "&aSet &d{0} &ato &f{1}"),
 
     // Pearl editor
     PEARL_EDITOR_TITLE("menus.pearl-editor.title", "&8» &lPearl Settings: &5{0}"),
@@ -88,7 +88,6 @@ public enum Lang {
 
     // Potion editor
     POTION_EDITOR_TITLE("menus.potion-editor.title", "&8» &lPotions: &b{0}"),
-    POTION_UPDATED("menus.potion-editor.updated", "&aSet &b{0} &ato &f{1}"),
 
     // Languages menu
     LANG_MENU_TITLE("menus.languages.title", "&8» &lLanguage Selection"),
@@ -107,7 +106,7 @@ public enum Lang {
     public final String fallback;
 
     Lang(String path, String fallback) {
-        this.path     = path;
+        this.path = path;
         this.fallback = fallback;
     }
 }
