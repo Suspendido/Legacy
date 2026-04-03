@@ -30,6 +30,7 @@ public class ProfileManager extends Manager {
     public int playerNoDamageTicks;
     public int mobNoDamageTicks;
     public double attackSpeed;
+    public boolean blockhit;
 
     // Tool damage
     public double dmgSwordWood;
@@ -147,6 +148,7 @@ public class ProfileManager extends Manager {
         playerNoDamageTicks = ints(path + ".combat.no-damage-ticks.player", 19);
         mobNoDamageTicks = ints(path + ".combat.no-damage-ticks.mob", 10);
         attackSpeed = doubles(path + ".combat.attack-speed", 1024.0);
+        blockhit = booleans(path + ".combat.block-hit", true);
 
         // Tool damage
         dmgSwordWood = doubles(path + ".tool-damage.swords.wood", 4.0);
