@@ -122,6 +122,7 @@ public class CombatListener extends Module<ListenerManager> {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRightClick(PlayerInteractEvent e) {
         if (swordBlocking == null) return;
+        if (!getInstance().getProfileManager().blockhit) return;
         Action action = e.getAction();
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
 
@@ -241,16 +242,16 @@ public class CombatListener extends Module<ListenerManager> {
     private double getProfileDamage(Material mat) {
         ProfileManager p = getInstance().getProfileManager();
         return switch (mat) {
-            case WOODEN_SWORD    -> p.dmgSwordWood;
-            case GOLDEN_SWORD    -> p.dmgSwordGold;
-            case STONE_SWORD     -> p.dmgSwordStone;
-            case IRON_SWORD      -> p.dmgSwordIron;
-            case DIAMOND_SWORD   -> p.dmgSwordDiamond;
+            case WOODEN_SWORD -> p.dmgSwordWood;
+            case GOLDEN_SWORD -> p.dmgSwordGold;
+            case STONE_SWORD -> p.dmgSwordStone;
+            case IRON_SWORD -> p.dmgSwordIron;
+            case DIAMOND_SWORD -> p.dmgSwordDiamond;
             case NETHERITE_SWORD -> p.dmgSwordNetherite;
-            case WOODEN_AXE      -> p.dmgAxeWood;
-            case STONE_AXE       -> p.dmgAxeStone;
-            case IRON_AXE        -> p.dmgAxeIron;
-            case DIAMOND_AXE     -> p.dmgAxeDiamond;
+            case WOODEN_AXE -> p.dmgAxeWood;
+            case STONE_AXE -> p.dmgAxeStone;
+            case IRON_AXE -> p.dmgAxeIron;
+            case DIAMOND_AXE -> p.dmgAxeDiamond;
             case WOODEN_PICKAXE,
                  STONE_PICKAXE,
                  IRON_PICKAXE,
@@ -260,14 +261,14 @@ public class CombatListener extends Module<ListenerManager> {
                  STONE_SHOVEL,
                  IRON_SHOVEL,
                  DIAMOND_SHOVEL,
-                 NETHERITE_SHOVEL  -> p.dmgShovel;
+                 NETHERITE_SHOVEL -> p.dmgShovel;
             case WOODEN_HOE,
                  STONE_HOE,
                  IRON_HOE,
                  DIAMOND_HOE,
-                 NETHERITE_HOE     -> p.dmgHoe;
-            case TRIDENT           -> p.dmgTrident;
-            default                -> 0;
+                 NETHERITE_HOE -> p.dmgHoe;
+            case TRIDENT -> p.dmgTrident;
+            default -> 0;
         };
     }
 

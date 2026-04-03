@@ -1,9 +1,8 @@
-package me.comunidad.dev.legacy.module.combat.menu;
+package me.comunidad.dev.legacy.module.combat.menu.editor;
 
 import me.comunidad.dev.legacy.framework.menu.Menu;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
 import me.comunidad.dev.legacy.framework.menu.button.Button;
-import me.comunidad.dev.legacy.module.combat.menu.editor.*;
 import me.comunidad.dev.legacy.module.lang.Lang;
 import me.comunidad.dev.legacy.module.lang.LangManager;
 import me.comunidad.dev.legacy.utils.ItemBuilder;
@@ -29,12 +28,13 @@ public class CombatSettingsMenu extends Menu {
     private final String base;
 
     private static final Object[][] FIELDS = {
-            {"Player No-Damage Ticks", "no-damage-ticks.player", 1, 1, 40, Material.PLAYER_HEAD, true},
-            {"Mob No-Damage Ticks", "no-damage-ticks.mob", 1, 1, 40, Material.ZOMBIE_HEAD, true},
-            {"Attack Speed", "attack-speed", 16.0, 4, 1024, Material.CLOCK, false},
+            {"Player No-Damage Ticks", "no-damage-ticks.player", 1, 1, 40, Material.PLAYER_HEAD, true, false},
+            {"Mob No-Damage Ticks", "no-damage-ticks.mob", 1, 1, 40,   Material.ZOMBIE_HEAD, true, false},
+            {"Attack Speed", "attack-speed", 16.0, 4, 1024, Material.CLOCK, false, false},
+            {"Block Hit", "block-hit", 0, 0, 0, Material.DIAMOND, false, true},
     };
 
-    private static final int[] SLOTS = {12, 14, 16};
+    private static final int[] SLOTS = {11, 13, 15, 17};
 
     public CombatSettingsMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.COMBAT_EDITOR_TITLE, profileId), 27, false);
@@ -68,44 +68,57 @@ public class CombatSettingsMenu extends Menu {
             final double max = ((Number)FIELDS[i][4]).doubleValue();
             final Material mat = (Material)FIELDS[i][5];
             final boolean isInt = (boolean)FIELDS[i][6];
+            final boolean isBoolean = (boolean)FIELDS[i][7];
             final String path = base + sub;
             final int slot = SLOTS[i];
 
             buttons.put(slot, new Button() {
                 @Override
                 public ItemStack getItemStack() {
-                    double val = getProfilesConfig().getDouble(path);
                     List<String> lore = new ArrayList<>();
-                    lore.add(lang().of(Lang.KB_CURRENT_VALUE, fmt(val, isInt)));
-                    lore.add(lang().of(Lang.KB_RANGE, fmt(min, isInt), fmt(max, isInt)));
-                    lore.add("");
-                    lore.add(lang().of(Lang.KB_HINT_LEFT,  1));
-                    lore.add(lang().of(Lang.KB_HINT_RIGHT, 1));
-                    lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT,  fmt(step, isInt)));
-                    lore.add(lang().of(Lang.KB_HINT_SHIFT_RIGHT, fmt(step, isInt)));
+                    if (isBoolean) {
+                        boolean val = getProfilesConfig().getBoolean(path);
+                        lore.add(lang().of(Lang.VALUE_CURRENT, val ? lang().of(Lang.PEARL_TOGGLE_ON) : lang().of(Lang.PEARL_TOGGLE_OFF)));
+                        lore.add("");
+                        lore.add(lang().of(Lang.VALUE_TOGGLE));
+                    } else {
+                        double val = getProfilesConfig().getDouble(path);
+                        lore.add(lang().of(Lang.VALUE_CURRENT, fmt(val, isInt)));
+                        lore.add(lang().of(Lang.VALUE_RANGE, fmt(min, isInt), fmt(max, isInt)));
+                        lore.add("");
+                        lore.add(lang().of(Lang.KB_HINT_LEFT, 1));
+                        lore.add(lang().of(Lang.KB_HINT_RIGHT, 1));
+                        lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT, fmt(step, isInt)));
+                        lore.add(lang().of(Lang.KB_HINT_SHIFT_RIGHT, fmt(step, isInt)));
+                    }
                     return new ItemBuilder(mat).setName("&c" + label).setLore(lore).toItemStack();
                 }
 
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     e.setCancelled(true);
-                    double delta = switch (e.getClick()) {
-                        case LEFT ->  1;
-                        case RIGHT -> -1;
-                        case SHIFT_LEFT ->  step;
-                        case SHIFT_RIGHT -> -step;
-                        default -> 0;
-                    };
-                    if (delta == 0) return;
+                    if (isBoolean) {
+                        getProfilesConfig().set(path, !getProfilesConfig().getBoolean(path));
+                    } else {
+                        double delta = switch (e.getClick()) {
+                            case LEFT ->  1;
+                            case RIGHT -> -1;
+                            case SHIFT_LEFT -> step;
+                            case SHIFT_RIGHT -> -step;
+                            default -> 0;
+                        };
+                        if (delta == 0) return;
 
-                    double next = Math.min(max, Math.max(min, round(getProfilesConfig().getDouble(path) + delta)));
-                    if (isInt) getProfilesConfig().set(path, (int) next);
-                    else getProfilesConfig().set(path, next);
+                        double next = Math.min(max, Math.max(min, round(getProfilesConfig().getDouble(path) + delta)));
+                        if (isInt) getProfilesConfig().set(path, (int) next);
+                        else getProfilesConfig().set(path, next);
+                    }
+
                     getProfilesConfig().reloadCache();
                     getProfilesConfig().save();
                     getInstance().getProfileManager().reload();
                     update();
-                    sendMessage(player, lang().of(Lang.COMBAT_UPDATED, label, fmt(next, isInt)));
+                    sendMessage(player, lang().of(Lang.VALUE_UPDATED, label, isBoolean ? getProfilesConfig().getBoolean(path) : fmt(getProfilesConfig().getDouble(path), isInt)));
                     playSuccess(player);
                 }
             });
