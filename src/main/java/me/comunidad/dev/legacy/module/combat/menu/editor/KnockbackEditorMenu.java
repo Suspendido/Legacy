@@ -28,16 +28,17 @@ public class KnockbackEditorMenu extends Menu {
     private final String base;
 
     private static final Object[][] FIELDS = {
-            {"Horizontal", "horizontal", 0.005, 0.0, 5.0, Material.BLAZE_ROD},
-            {"Vertical", "vertical", 0.005, 0.0, 5.0, Material.BLAZE_POWDER},
-            {"Vertical Limit", "vertical-limit", 0.005, 0.0, 5.0, Material.MAGMA_CREAM},
-            {"Extra Vertical", "extra-vertical", 0.005, 0.0, 5.0, Material.FIRE_CHARGE},
-            {"Extra Horizontal", "extra-horizontal", 0.005, 0.0, 5.0, Material.GLOWSTONE_DUST},
-            {"Sprint Modifier", "sprint-modifier", 0.05,  0.0, 5.0, Material.FEATHER},
-            {"Sprint Reset Modifier", "sprint-reset-mod", 0.05,  0.0, 5.0, Material.RABBIT_FOOT},
+            {"Horizontal", "horizontal", 0.005, 0.0, 5.0, Material.BLAZE_ROD, false},
+            {"Vertical", "vertical", 0.005, 0.0, 5.0, Material.BLAZE_POWDER, false},
+            {"Vertical Limit", "vertical-limit", 0.005, 0.0, 5.0, Material.MAGMA_CREAM, false},
+            {"Extra Vertical", "extra-vertical", 0.005, 0.0, 5.0, Material.FIRE_CHARGE, false},
+            {"Extra Horizontal", "extra-horizontal", 0.005, 0.0, 5.0, Material.GLOWSTONE_DUST, false},
+            {"Sprint Modifier", "sprint-modifier",  0.05,  0.0, 5.0, Material.FEATHER, false},
+            {"Sprint Reset Modifier", "sprint-reset-mod", 0.05,  0.0, 5.0, Material.RABBIT_FOOT, false},
+            {"Ground Check", "ground-check", 0, 0, 0, Material.GRASS_BLOCK, true},
     };
 
-    private static final int[] SLOTS = {11, 13, 15, 17, 30, 32, 34};
+    private static final int[] SLOTS = {11, 13, 15, 17, 29, 31, 33, 35};
 
     public KnockbackEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.KB_EDITOR_TITLE, profileId), 54, false);
@@ -66,50 +67,60 @@ public class KnockbackEditorMenu extends Menu {
         for (int i = 0; i < FIELDS.length; i++) {
             final String label = (String)FIELDS[i][0];
             final String sub = (String)FIELDS[i][1];
-            final double step = (double)FIELDS[i][2];
-            final double min = (double)FIELDS[i][3];
-            final double max = (double)FIELDS[i][4];
+            final double step = ((Number)FIELDS[i][2]).doubleValue();
+            final double min = ((Number)FIELDS[i][3]).doubleValue();
+            final double max = ((Number)FIELDS[i][4]).doubleValue();
             final Material mat = (Material)FIELDS[i][5];
+            final boolean isBoolean = (boolean)FIELDS[i][6];
             final String path = base + sub;
             final int slot = SLOTS[i];
 
             buttons.put(slot, new Button() {
                 @Override
                 public ItemStack getItemStack() {
-                    double val = getProfilesConfig().getDouble(path);
                     List<String> lore = new ArrayList<>();
-                    lore.add(lang().of(Lang.KB_CURRENT_VALUE, round(val)));
-                    lore.add(lang().of(Lang.KB_RANGE, min, max));
-                    lore.add("");
-                    lore.add(lang().of(Lang.KB_HINT_LEFT, step));
-                    lore.add(lang().of(Lang.KB_HINT_RIGHT, step));
-                    lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT, step * 5));
-                    lore.add(lang().of(Lang.KB_HINT_SHIFT_RIGHT, step * 5));
-                    return new ItemBuilder(mat)
-                            .setName("&e" + label)
-                            .setLore(lore)
-                            .toItemStack();
+                    if (isBoolean) {
+                        boolean val = getProfilesConfig().getBoolean(path);
+                        lore.add(lang().of(Lang.VALUE_CURRENT, val ? lang().of(Lang.PEARL_TOGGLE_ON) : lang().of(Lang.PEARL_TOGGLE_OFF)));
+                        lore.add("");
+                        lore.add(lang().of(Lang.VALUE_TOGGLE));
+                    } else {
+                        double val = getProfilesConfig().getDouble(path);
+                        lore.add(lang().of(Lang.VALUE_CURRENT, round(val)));
+                        lore.add(lang().of(Lang.VALUE_RANGE, min, max));
+                        lore.add("");
+                        lore.add(lang().of(Lang.KB_HINT_LEFT, step));
+                        lore.add(lang().of(Lang.KB_HINT_RIGHT, step));
+                        lore.add(lang().of(Lang.KB_HINT_SHIFT_LEFT, step * 5));
+                        lore.add(lang().of(Lang.KB_HINT_SHIFT_RIGHT, step * 5));
+                    }
+                    return new ItemBuilder(mat).setName("&e" + label).setLore(lore).toItemStack();
                 }
 
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     e.setCancelled(true);
-                    double delta = switch (e.getClick()) {
-                        case LEFT -> step;
-                        case RIGHT -> -step;
-                        case SHIFT_LEFT -> step * 5;
-                        case SHIFT_RIGHT -> -step * 5;
-                        default -> 0;
-                    };
-                    if (delta == 0) return;
+                    if (isBoolean) {
+                        getProfilesConfig().set(path, !getProfilesConfig().getBoolean(path));
+                    } else {
+                        double delta = switch (e.getClick()) {
+                            case LEFT ->  step;
+                            case RIGHT -> -step;
+                            case SHIFT_LEFT ->  step * 5;
+                            case SHIFT_RIGHT -> -step * 5;
+                            default -> 0;
+                        };
+                        if (delta == 0) return;
 
-                    double next = Math.min(max, Math.max(min, round(getProfilesConfig().getDouble(path) + delta)));
-                    getProfilesConfig().set(path, next);
+                        double next = Math.min(max, Math.max(min, round(getProfilesConfig().getDouble(path) + delta)));
+                        getProfilesConfig().set(path, next);
+                    }
+
                     getProfilesConfig().reloadCache();
                     getProfilesConfig().save();
                     getInstance().getProfileManager().reload();
                     update();
-                    sendMessage(player, lang().of(Lang.KB_UPDATED, label, next));
+                    sendMessage(player, lang().of(Lang.VALUE_UPDATED, label, isBoolean ? getProfilesConfig().getBoolean(path) : round(getProfilesConfig().getDouble(path))));
                     playNeutral(player);
                 }
             });
