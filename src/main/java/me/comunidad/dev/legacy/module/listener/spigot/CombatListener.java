@@ -46,6 +46,7 @@ public class CombatListener extends Module<ListenerManager> {
         blockedSounds.add("entity.player.attack.knockback");
         blockedSounds.add("entity.player.attack.crit");
         blockedSounds.add("entity.player.attack.weak");
+        blockedSounds.add("entity.fishing_bobber.retrieve");
 
         EntityDamageEvent.DamageCause tmp;
         try {
@@ -68,16 +69,23 @@ public class CombatListener extends Module<ListenerManager> {
         cancelSweep();
     }
 
+    private boolean blockingEnabled() {
+        return swordBlocking != null && getInstance().getProfileManager().blockhit;
+    }
+
+    private void clearIfSword(ItemStack item) {
+        if (swordBlocking != null && item != null && isSword(item.getType())) {
+            swordBlocking.clearComponents(item);
+        }
+    }
+
     private void applyNoDamageTicksToWorld() {
         int playerTicks = getInstance().getProfileManager().playerNoDamageTicks;
         int mobTicks = getInstance().getProfileManager().mobNoDamageTicks;
         Bukkit.getWorlds().forEach(world ->
                 world.getLivingEntities().forEach(entity -> {
-                    if (entity instanceof Player) {
-                        entity.setMaximumNoDamageTicks(playerTicks);
-                    } else {
-                        entity.setMaximumNoDamageTicks(mobTicks);
-                    }
+                    if (entity instanceof Player) entity.setMaximumNoDamageTicks(playerTicks);
+                    else entity.setMaximumNoDamageTicks(mobTicks);
                 })
         );
     }
@@ -94,9 +102,7 @@ public class CombatListener extends Module<ListenerManager> {
 
     private void setPlayerAttackSpeed(Player player) {
         AttributeInstance attr = player.getAttribute(Attribute.ATTACK_SPEED);
-        if (attr != null) {
-            attr.setBaseValue(getInstance().getProfileManager().attackSpeed);
-        }
+        if (attr != null) attr.setBaseValue(getInstance().getProfileManager().attackSpeed);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -121,8 +127,7 @@ public class CombatListener extends Module<ListenerManager> {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRightClick(PlayerInteractEvent e) {
-        if (swordBlocking == null) return;
-        if (!getInstance().getProfileManager().blockhit) return;
+        if (!blockingEnabled()) return;
         Action action = e.getAction();
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
 
@@ -141,6 +146,13 @@ public class CombatListener extends Module<ListenerManager> {
         if (!(e.getEntity() instanceof Player victim)) return;
         if (!swordBlocking.isBlockingSword(victim)) return;
 
+        if (!getInstance().getProfileManager().blockhit) {
+            ItemStack main = victim.getInventory().getItemInMainHand();
+            clearIfSword(main);
+            victim.getInventory().setItemInMainHand(main);
+            return;
+        }
+
         double dmg = e.getDamage();
         e.setDamage(Math.max(0, dmg - (dmg * 0.5)));
     }
@@ -150,15 +162,12 @@ public class CombatListener extends Module<ListenerManager> {
         if (swordBlocking == null) return;
         if (!(e.getWhoClicked() instanceof Player player)) return;
 
-        ItemStack current = e.getCurrentItem();
-        if (current != null && isSword(current.getType())) swordBlocking.clearComponents(current);
-
-        ItemStack cursor = e.getCursor();
-        if (isSword(cursor.getType())) swordBlocking.clearComponents(cursor);
+        clearIfSword(e.getCurrentItem());
+        clearIfSword(e.getCursor());
 
         Bukkit.getScheduler().runTask(getInstance(), () -> {
             ItemStack main = player.getInventory().getItemInMainHand();
-            if (isSword(main.getType())) {
+            if (blockingEnabled() && isSword(main.getType())) {
                 swordBlocking.applyComponents(main);
                 player.getInventory().setItemInMainHand(main);
             }
@@ -172,7 +181,7 @@ public class CombatListener extends Module<ListenerManager> {
 
         Bukkit.getScheduler().runTask(getInstance(), () -> {
             ItemStack main = player.getInventory().getItemInMainHand();
-            if (isSword(main.getType())) {
+            if (blockingEnabled() && isSword(main.getType())) {
                 swordBlocking.applyComponents(main);
                 player.getInventory().setItemInMainHand(main);
             }
@@ -184,36 +193,28 @@ public class CombatListener extends Module<ListenerManager> {
         if (swordBlocking == null) return;
 
         PlayerInventory inv = e.getPlayer().getInventory();
-        ItemStack prev = inv.getItem(e.getPreviousSlot());
-        if (prev != null && isSword(prev.getType())) swordBlocking.clearComponents(prev);
+        clearIfSword(inv.getItem(e.getPreviousSlot()));
 
         ItemStack next = inv.getItem(e.getNewSlot());
-        if (next != null && isSword(next.getType())) swordBlocking.applyComponents(next);
+        if (blockingEnabled() && next != null && isSword(next.getType())) {
+            swordBlocking.applyComponents(next);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDrop(PlayerDropItemEvent e) {
-        if (swordBlocking == null) return;
-        ItemStack item = e.getItemDrop().getItemStack();
-        if (isSword(item.getType())) swordBlocking.clearComponents(item);
+        clearIfSword(e.getItemDrop().getItemStack());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent e) {
-        if (swordBlocking == null) return;
-        e.getDrops().forEach(i -> {
-            if (isSword(i.getType())) swordBlocking.clearComponents(i);
-        });
+        e.getDrops().forEach(this::clearIfSword);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
-        if (swordBlocking == null) return;
-        ItemStack main = e.getPlayer().getInventory().getItemInMainHand();
-        if (isSword(main.getType())) swordBlocking.clearComponents(main);
+        clearIfSword(e.getPlayer().getInventory().getItemInMainHand());
     }
-
-    // ── Tool damage (reads from active profile) ───────────────────────────
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onOldToolDamage(EntityDamageByEntityEvent e) {
@@ -222,17 +223,13 @@ public class CombatListener extends Module<ListenerManager> {
         attacker.resetCooldown();
 
         ItemStack weapon = attacker.getInventory().getItemInMainHand();
-        Material type = weapon.getType();
-
-        double baseDamage = getProfileDamage(type);
+        double baseDamage = getProfileDamage(weapon.getType());
         if (baseDamage <= 0) return;
 
         e.setDamage(baseDamage);
 
         int sharp = weapon.getEnchantmentLevel(Enchantment.SHARPNESS);
-        if (sharp > 0) {
-            e.setDamage(e.getDamage() + sharp * 1.25);
-        }
+        if (sharp > 0) e.setDamage(e.getDamage() + sharp * 1.25);
     }
 
     /**
@@ -274,14 +271,12 @@ public class CombatListener extends Module<ListenerManager> {
 
     @EventHandler
     public void onPlayerJoinAttackDelay(PlayerJoinEvent e) {
-        Bukkit.getScheduler().runTaskLater(getInstance(), () ->
-                e.getPlayer().setMaximumNoDamageTicks(getInstance().getProfileManager().playerNoDamageTicks), 1L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> e.getPlayer().setMaximumNoDamageTicks(getInstance().getProfileManager().playerNoDamageTicks), 1L);
     }
 
     @EventHandler
     public void onPlayerRespawnAttackDelay(PlayerRespawnEvent e) {
-        Bukkit.getScheduler().runTaskLater(getInstance(), () ->
-                e.getPlayer().setMaximumNoDamageTicks(getInstance().getProfileManager().playerNoDamageTicks), 1L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> e.getPlayer().setMaximumNoDamageTicks(getInstance().getProfileManager().playerNoDamageTicks), 1L);
     }
 
     @EventHandler
