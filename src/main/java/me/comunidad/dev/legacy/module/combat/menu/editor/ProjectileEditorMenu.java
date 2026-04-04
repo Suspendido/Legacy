@@ -35,10 +35,11 @@ public class ProjectileEditorMenu extends Menu {
             {"Arrow Speed", "arrow.speed", 0.1, 0.1, 10.0, Material.ARROW},
             {"Arrow Gravity", "arrow.gravity", 0.005, 0.0, 1.0, Material.FEATHER},
             {"Snowball Speed", "snowball.speed", 0.1, 0.1, 10.0, Material.SNOWBALL},
+            {"Snowball Gravity", "snowball.gravity", 0.005, 0.0, 1.0, Material.SNOWBALL},
             {"Trident Speed", "trident.speed", 0.1, 0.1, 10.0, Material.TRIDENT},
     };
 
-    private static final int[] SLOTS = {11, 12, 13, 14, 15, 16, 17, 29};
+    private static final int[] SLOTS = {11, 12, 13, 14, 15, 16, 17, 29, 30};
 
     public ProjectileEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.PROJ_EDITOR_TITLE, profileId), 54, false);
@@ -67,9 +68,9 @@ public class ProjectileEditorMenu extends Menu {
         for (int i = 0; i < FIELDS.length; i++) {
             final String label = (String)FIELDS[i][0];
             final String sub = (String)FIELDS[i][1];
-            final double step= (double)FIELDS[i][2];
-            final double min = (double)FIELDS[i][3];
-            final double max = (double)FIELDS[i][4];
+            final double step = ((Number)FIELDS[i][2]).doubleValue();
+            final double min = ((Number)FIELDS[i][3]).doubleValue();
+            final double max = ((Number)FIELDS[i][4]).doubleValue();
             final Material mat = (Material)FIELDS[i][5];
             final String path = base + sub;
             final int slot = SLOTS[i];
