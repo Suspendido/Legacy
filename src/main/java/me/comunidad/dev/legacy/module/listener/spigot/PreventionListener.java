@@ -72,13 +72,13 @@ public class PreventionListener extends Module<ListenerManager> {
     private boolean shouldCancelPearl(Player player, EnderPearl pearl, Block block) {
         if (block == null) return false;
 
-        Location eye    = player.getEyeLocation();
+        Location eye = player.getEyeLocation();
         Location center = block.getLocation().add(0.5, 0.5, 0.5);
 
         if (center.distanceSquared(eye) > 3.0D) return false;
 
         Vector pearlDir = pearl.getVelocity().normalize();
-        Vector toBlock  = center.toVector().subtract(eye.toVector()).normalize();
+        Vector toBlock = center.toVector().subtract(eye.toVector()).normalize();
 
         return pearlDir.dot(toBlock) > 0.85;
     }
@@ -88,7 +88,7 @@ public class PreventionListener extends Module<ListenerManager> {
         if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
 
         Player player = event.getPlayer();
-        Block block   = event.getTo().getBlock();
+        Block block = event.getTo().getBlock();
 
         if (isInvalidPearlBlock(block)) {
             event.setCancelled(true);
@@ -97,6 +97,12 @@ public class PreventionListener extends Module<ListenerManager> {
             sendMessage(player, getInstance().getLangManager().of(Lang.EXPLOIT_INVALID_PEARL));
             return;
         }
+
+        if (getInstance().getProfileManager().pearlDamage > 0) {
+            player.damage(getInstance().getProfileManager().pearlDamage);
+        }
+
+        Tasks.execute(getManager(), () -> player.setCooldown(Material.ENDER_PEARL, getInstance().getProfileManager().pearlCooldownTicks));
 
         Location to = event.getTo();
         double x = to.getBlockX() + 0.5D;
@@ -107,7 +113,7 @@ public class PreventionListener extends Module<ListenerManager> {
     }
 
     private double getSafeY(Player player, PlayerTeleportEvent event) {
-        Location to   = event.getTo();
+        Location to = event.getTo();
         Location from = event.getFrom();
 
         if (player.hasPotionEffect(PotionEffectType.LEVITATION) && to.getY() >= from.getY()) {
