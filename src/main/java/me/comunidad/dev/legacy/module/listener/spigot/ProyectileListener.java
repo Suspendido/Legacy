@@ -1,12 +1,27 @@
 package me.comunidad.dev.legacy.module.listener.spigot;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import me.comunidad.dev.legacy.framework.Module;
 import me.comunidad.dev.legacy.module.combat.ProfileManager;
 import me.comunidad.dev.legacy.module.listener.ListenerManager;
+import me.comunidad.dev.legacy.utils.Tasks;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /*
  * Copyright (c) 2026. @Comunidad, made since 3/4/2026
@@ -15,12 +30,63 @@ import org.bukkit.util.Vector;
  */
 public class ProyectileListener extends Module<ListenerManager> {
 
+    private final Set<UUID> rodHit = new HashSet<>();
+
+    private static final Set<String> ROD_SOUNDS = Set.of(
+            "entity.fishing_bobber.throw"
+    );
+
     public ProyectileListener(ListenerManager manager) {
         super(manager);
+        cancelRodSounds();
     }
 
     private ProfileManager profile() {
         return getInstance().getProfileManager();
+    }
+
+    /**
+     * Intercepta los sonidos de la caña de pescar y los reemplaza
+     * por el sonido de snowball para el jugador que lo recibe.
+     */
+    private void cancelRodSounds() {
+        ProtocolLibrary.getProtocolManager().addPacketListener(
+                new PacketAdapter(getInstance(), ListenerPriority.NORMAL,
+                        PacketType.Play.Server.NAMED_SOUND_EFFECT) {
+                    @Override
+                    public void onPacketSending(PacketEvent event) {
+                        try {
+                            if (event.getPacket().getSoundEffects().size() == 0) return;
+
+                            String key = event.getPacket()
+                                    .getSoundEffects()
+                                    .read(0)
+                                    .getKey()
+                                    .getKey();
+
+                            if (!ROD_SOUNDS.contains(key)) return;
+
+                            event.setCancelled(true);
+
+                            Player player = event.getPlayer();
+                            if (player != null) {
+                                player.playSound(
+                                        player.getLocation(),
+                                        Sound.ENTITY_SNOWBALL_THROW,
+                                        SoundCategory.PLAYERS,
+                                        0.5f, 0.1f
+                                );
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                }
+        );
+    }
+
+    @EventHandler
+    public void onVelocity(PlayerVelocityEvent e) {
+        if (!rodHit.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -47,18 +113,83 @@ public class ProyectileListener extends Module<ListenerManager> {
         }
     }
 
-    /**
-     * En versiones modernas, al lanzar una perla el servidor le suma
-     * la velocidad actual del jugador al vector inicial, lo que hace que
-     * al correr la perla vuele diferente. En 1.8 esto NO ocurría —
-     * la velocidad era solo dirección * speed, sin herencia del movimiento.
-     * <p>
-     * Se sobreescribe la velocidad completa con solo la dirección de la cámara.
-     */
-    private void applyLegacyPearl(Player player, EnderPearl pearl, double speed, double gravity) {
-        Vector dir = player.getEyeLocation().getDirection().normalize().multiply(speed);
-        pearl.setVelocity(dir);
+    @EventHandler
+    public void onProyectileHit(ProjectileHitEvent e) {
+        Projectile projectile = e.getEntity();
 
+        if (!(projectile instanceof Snowball || projectile instanceof Egg)) return;
+        if (!(e.getHitEntity() instanceof Player player)) return;
+        if (!(projectile.getShooter() instanceof Player shooter)) return;
+
+        player.setNoDamageTicks(0);
+        player.damage(0.01, shooter);
+
+        Tasks.executeLater(getManager(), 1L, () -> {
+            if (!player.isOnline()) return;
+            applyProjectileKB(player, shooter);
+        });
+    }
+
+    @EventHandler
+    public void onRodHit(PlayerFishEvent e) {
+        if (e.getState() != PlayerFishEvent.State.CAUGHT_ENTITY) return;
+        if (!(e.getCaught() instanceof Player damaged)) return;
+
+        Player attacker = e.getPlayer();
+        ProfileManager p = profile();
+
+        damaged.setNoDamageTicks(0);
+        damaged.damage(0.01, attacker);
+        rodHit.add(damaged.getUniqueId());
+        e.getHook().remove();
+
+        Tasks.executeLater(getManager(), 2L, () -> rodHit.remove(damaged.getUniqueId()));
+        Tasks.executeLater(getManager(), 1L, () -> {
+            if (!damaged.isOnline()) return;
+
+            Vector velocity = calculateKB(
+                    damaged, attacker,
+                    p.rodKbHorizontal,
+                    p.rodKbVertical,
+                    p.rodKbVerticalLimit
+            );
+            damaged.setVelocity(velocity);
+        });
+    }
+
+    private void applyProjectileKB(Player damaged, Player shooter) {
+        ProfileManager p = profile();
+        damaged.setVelocity(calculateKB(
+                damaged, shooter,
+                p.projKbHorizontal,
+                p.projKbVertical,
+                p.projKbVerticalLimit
+        ));
+    }
+
+    private Vector calculateKB(Player damaged, Player attacker, double horizontal, double vertical, double verticalLimit) {
+        double dx = attacker.getLocation().getX() - damaged.getLocation().getX();
+        double dz = attacker.getLocation().getZ() - damaged.getLocation().getZ();
+
+        while (dx * dx + dz * dz < 1.0E-4) {
+            dx = (Math.random() - Math.random()) * 0.01;
+            dz = (Math.random() - Math.random()) * 0.01;
+        }
+
+        double magnitude = Math.sqrt(dx * dx + dz * dz);
+        Vector velocity  = damaged.getVelocity();
+
+        velocity.setX(velocity.getX() / 2 - dx / magnitude * horizontal);
+        velocity.setY(velocity.getY() / 2 + vertical);
+        velocity.setZ(velocity.getZ() / 2 - dz / magnitude * horizontal);
+
+        if (velocity.getY() > verticalLimit) velocity.setY(verticalLimit);
+
+        return velocity;
+    }
+
+    private void applyLegacyPearl(Player player, EnderPearl pearl, double speed, double gravity) {
+        pearl.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(speed));
         applyGravity(pearl, gravity, 0.03);
     }
 
