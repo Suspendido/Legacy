@@ -16,7 +16,7 @@ public class ProfileManager extends Manager {
 
     private String activeId;
 
-    // Knockback
+    // Knockback (Hit)
     public double kbHorizontal;
     public double kbVertical;
     public double kbVerticalLimit;
@@ -25,6 +25,16 @@ public class ProfileManager extends Manager {
     public double kbSprintModifier;
     public double kbSprintResetModifier;
     public boolean requiredGroundCheck;
+
+    // Knockback (Projectile)
+    public double projKbHorizontal;
+    public double projKbVertical;
+    public double projKbVerticalLimit;
+
+    // Knockback (Rod)
+    public double rodKbHorizontal;
+    public double rodKbVertical;
+    public double rodKbVerticalLimit;
 
     // Combat
     public int playerNoDamageTicks;
@@ -59,10 +69,14 @@ public class ProfileManager extends Manager {
     public double arrowGravity;
     public double snowballSpeed;
     public double tridentSpeed;
+    public double snowballGravity;
+    public double tridentGravity;
 
     // Pearls
     public double pearlDamage;
     public int pearlCooldownTicks;
+    public double pearlGravity;
+    public double pearlSpeed;
 
     // Potions (splash behaviour)
     public double potionSelfIntensityBoost;
@@ -134,7 +148,7 @@ public class ProfileManager extends Manager {
     }
 
     private void loadFrom(String path) {
-        // Knockback
+        // Knockback (Hits)
         kbHorizontal = doubles(path + ".knockback.horizontal", 0.35);
         kbVertical = doubles(path + ".knockback.vertical", 0.35);
         kbVerticalLimit = doubles(path + ".knockback.vertical-limit", 0.40);
@@ -143,6 +157,16 @@ public class ProfileManager extends Manager {
         kbSprintModifier = doubles(path + ".knockback.sprint-modifier", 0.5);
         kbSprintResetModifier = doubles(path + ".knockback.sprint-reset-mod", 1.0);
         requiredGroundCheck = booleans(path + ".knockback.ground_check", true);
+
+        // Knockback (Projectile)
+        projKbHorizontal = doubles(path + ".knockback-projectile.horizontal", 0.35);
+        projKbVertical = doubles(path + ".knockback-projectile.vertical", 0.35);
+        projKbVerticalLimit = doubles(path + ".knockback-projectile.vertical-limit", 0.40);
+
+        // Knockback (Rod)
+        rodKbHorizontal = doubles(path + "knockback-rod.horizontal", 0.35);
+        rodKbVertical = doubles(path + "knockback-rod.vertical", 0.35);
+        rodKbVerticalLimit = doubles(path + "knockback-rod.vertical-limit", 0.4);
 
         // Combat
         playerNoDamageTicks = ints(path + ".combat.no-damage-ticks.player", 19);
@@ -177,10 +201,14 @@ public class ProfileManager extends Manager {
         arrowGravity = doubles(path + ".projectiles.arrow.gravity", 0.05);
         snowballSpeed = doubles(path + ".projectiles.snowball.speed", 1.0);
         tridentSpeed = doubles(path + ".projectiles.trident.speed", 1.0);
+        snowballGravity = doubles(path + ".projectiles.snowball.gravity", 0.03);
+        tridentGravity = doubles(path + ".projectiles.trident.gravity", 0.05);
 
         // Pearls
         pearlDamage = doubles(path + ".pearls.damage", 5.0);
         pearlCooldownTicks = ints(path + ".pearls.cooldown-ticks", 20);
+        pearlGravity = doubles(path + ".pearls.gravity", 0.03);
+        pearlSpeed = doubles(path + ".pearls.speed", 1.5);
 
         // Potion splash behaviour
         potionSelfIntensityBoost = doubles(path + ".potions.self-intensity-boost", 0.3);
