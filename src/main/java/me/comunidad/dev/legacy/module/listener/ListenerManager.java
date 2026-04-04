@@ -36,7 +36,9 @@ public class ListenerManager extends Manager {
                 new KnockbackListener(this),
                 new PotionListener(this),
                 new PreventionListener(this),
-                new CombatListener(this)
+                new CombatListener(this),
+                new ProyectileListener(this),
+                new ArrowGravityListener(this)
         ));
 
     }
