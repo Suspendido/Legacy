@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import me.comunidad.dev.legacy.Core;
 import me.comunidad.dev.legacy.framework.Manager;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 /*
  * Copyright (c) 2026. @Comunidad, made since 2/4/2026
@@ -110,6 +113,18 @@ public class ProfileManager extends Manager {
         if (activeId == null) return; // no profiles at all
 
         loadFrom("profiles." + activeId);
+
+        for (Player player : getInstance().getServer().getOnlinePlayers()) {
+            AttributeInstance attr = player.getAttribute(Attribute.ATTACK_SPEED);
+            if (attr != null) attr.setBaseValue(attackSpeed);
+            player.setMaximumNoDamageTicks(playerNoDamageTicks);
+        }
+
+        getInstance().getServer().getWorlds().forEach(world -> world.getLivingEntities().forEach(entity -> {
+            if (!(entity instanceof Player)) {
+                entity.setMaximumNoDamageTicks(mobNoDamageTicks);
+            }
+        }));
     }
 
     public void enable() {
