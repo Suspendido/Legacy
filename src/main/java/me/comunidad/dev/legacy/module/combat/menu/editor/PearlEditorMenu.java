@@ -29,10 +29,12 @@ public class PearlEditorMenu extends Menu {
 
     private static final Object[][] FIELDS = {
             {"Damage on Land", "damage", 0.5, 0.0, 20.0, Material.ENDER_PEARL, false, false},
-            {"Cooldown (ticks)", "cooldown-ticks", 1, 0, 200, Material.CLOCK, true,  false},
+            {"Speed on Launch", "speed", 0.005, 0.0, 1, Material.SUGAR, false, false},
+            {"Pearl Gravity", "gravity", 0.005, 0.0, 1, Material.FEATHER, false, false},
+            {"Cooldown (ticks)", "cooldown-ticks", 1, 0, 2000, Material.CLOCK, true,  false},
     };
 
-    private static final int[] SLOTS = {13, 15};
+    private static final int[] SLOTS = {11, 13, 15, 17};
 
     public PearlEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.PEARL_EDITOR_TITLE, profileId), 3*9, false);
@@ -71,7 +73,8 @@ public class PearlEditorMenu extends Menu {
             final int slot = SLOTS[i];
 
             buttons.put(slot, new Button() {
-                @Override public ItemStack getItemStack() {
+                @Override
+                public ItemStack getItemStack() {
                     double val = getProfilesConfig().getDouble(path);
                     List<String> lore = new ArrayList<>();
                     if (toggle) {
@@ -90,17 +93,18 @@ public class PearlEditorMenu extends Menu {
                     return new ItemBuilder(mat).setName("&5" + label).setLore(lore).toItemStack();
                 }
 
-                @Override public void onClick(InventoryClickEvent e) {
+                @Override
+                public void onClick(InventoryClickEvent e) {
                     e.setCancelled(true);
                     if (toggle) {
                         double cur = getProfilesConfig().getDouble(path);
                         getProfilesConfig().set(path, cur == 1 ? 0 : 1);
                     } else {
                         double delta = switch (e.getClick()) {
-                            case LEFT ->  1;
-                            case RIGHT -> -1;
-                            case SHIFT_LEFT ->  step;
-                            case SHIFT_RIGHT -> -step;
+                            case LEFT ->  step;
+                            case RIGHT -> -step;
+                            case SHIFT_LEFT ->  step * 5;
+                            case SHIFT_RIGHT -> -step * 5;
                             default -> 0;
                         };
                         if (delta == 0) return;
