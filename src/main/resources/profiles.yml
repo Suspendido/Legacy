@@ -1,15 +1,7 @@
-# profiles.yml  –  Combat profile definitions
-# Each key under 'profiles' is loaded automatically by ManageCombatMenu.
-
 profiles:
-  
-  # ──────────────────────────────────────────
-  #  Default HCF-style profile
-  # ──────────────────────────────────────────
   default:
     display-name: "&f&lDefault"
     active: true
-    
     knockback:
       horizontal: 0.35
       vertical: 0.35
@@ -19,14 +11,12 @@ profiles:
       sprint-modifier: 0.5
       sprint-reset-mod: 1.0
       ground-check: true
-    
     combat:
       no-damage-ticks:
         player: 19
         mob: 10
       attack-speed: 1024.0
       block-hit: true
-    
     tool-damage:
       swords:
         wood: 4.0
@@ -44,7 +34,6 @@ profiles:
       shovel: 1.0
       hoe: 1.0
       trident: 8.0
-    
     projectiles:
       potion:
         speed-multiplier: 0.5
@@ -58,81 +47,12 @@ profiles:
         speed: 1.0
       trident:
         speed: 1.0
-    
     pearls:
       damage: 5.0
       cooldown-ticks: 20
       ground-check: 0
-    
     potions:
       speed-multiplier: 0.5
-      player-vel-contribution: 1.0
-      self-intensity-boost: 0.3
-      min-self-intensity: 0.6
-      max-intensity-cap: 1.0
-  
-  # ──────────────────────────────────────────
-  #  Competitive / ranked profile
-  # ──────────────────────────────────────────
-  competitive:
-    display-name: "&b&lCompetitive"
-    active: false
-    
-    knockback:
-      horizontal: 0.40
-      vertical: 0.40
-      vertical-limit: 0.45
-      extra-vertical: 0.09
-      extra-horizontal: 0.45
-      sprint-modifier: 0.5
-      sprint-reset-mod: 1.0
-    
-    combat:
-      no-damage-ticks:
-        player: 18
-        mob: 8
-      attack-speed: 1024.0
-    
-    tool-damage:
-      swords:
-        wood: 4.0
-        gold: 4.0
-        stone: 5.0
-        iron: 6.0
-        diamond: 7.0
-        netherite: 7.0
-      axes:
-        wood: 3.0
-        stone: 4.0
-        iron: 5.0
-        diamond: 6.0
-      pickaxe: 2.0
-      shovel: 1.0
-      hoe: 1.0
-      trident: 8.0
-    
-    projectiles:
-      potion:
-        speed-multiplier: 0.5
-        y-offset: 0.1
-        player-vel-x: 1.0
-        player-vel-z: 1.0
-      arrow:
-        speed: 1.0
-        gravity: 0.05
-      snowball:
-        speed: 1.0
-      trident:
-        speed: 1.0
-    
-    pearls:
-      damage: 5.0
-      cooldown-ticks: 16
-      ground-check: 0
-    
-    potions:
-      speed-multiplier: 0.5
-      y-offset: 0.1
       player-vel-contribution: 1.0
       self-intensity-boost: 0.3
       min-self-intensity: 0.6
