@@ -17,10 +17,6 @@ public class PotionListener extends Module<ListenerManager> {
         super(manager);
     }
 
-    private ProfileManager profile() {
-        return getInstance().getProfileManager();
-    }
-
     /**
      * Boosts self-splash intensity when the throwing player hits themselves.
      * Threshold and cap come from the active profile.
@@ -30,15 +26,13 @@ public class PotionListener extends Module<ListenerManager> {
         if (!(event.getPotion().getShooter() instanceof Player player)) return;
         if (!player.isSprinting()) return;
 
-        ProfileManager p = profile();
-
         for (var affected : event.getAffectedEntities()) {
             if (!affected.getUniqueId().equals(player.getUniqueId())) continue;
 
             double intensity = event.getIntensity(affected);
-            if (intensity <= p.potionMinSelfIntensity) continue;
+            if (intensity <= getInstance().getProfileManager().potionMinSelfIntensity) continue;
 
-            event.setIntensity(affected, Math.min(intensity + p.potionSelfIntensityBoost, p.potionMaxIntensityCap));
+            event.setIntensity(affected, Math.min(intensity + getInstance().getProfileManager().potionSelfIntensityBoost, getInstance().getProfileManager().potionMaxIntensityCap));
         }
     }
 
@@ -51,18 +45,16 @@ public class PotionListener extends Module<ListenerManager> {
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (!(event.getEntity() instanceof ThrownPotion potion)) return;
-        if (!(potion.getShooter() instanceof Player player))      return;
-
-        ProfileManager p = profile();
+        if (!(potion.getShooter() instanceof Player player)) return;
 
         Vector velocity = player.getLocation().getDirection();
-        velocity.multiply(p.potionSpeedMultiplier);
+        velocity.multiply(getInstance().getProfileManager().potionSpeedMultiplier);
 
         Vector playerVel = player.getVelocity();
         velocity.add(new Vector(playerVel.getX() *
-                p.potionPlayerVelX,
-                p.potionYOffset,
-                playerVel.getZ() * p.potionPlayerVelZ
+                getInstance().getProfileManager().potionPlayerVelX,
+                getInstance().getProfileManager().potionYOffset,
+                playerVel.getZ() * getInstance().getProfileManager().potionPlayerVelZ
         ));
 
         potion.setVelocity(velocity);
