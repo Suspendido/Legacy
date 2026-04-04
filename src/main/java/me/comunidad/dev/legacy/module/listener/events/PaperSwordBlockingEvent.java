@@ -166,18 +166,14 @@ public class PaperSwordBlockingEvent {
 
     private Method findPatchSetMethod(Class<?> builderClass) throws NoSuchMethodException {
         for (Method m : builderClass.getMethods()) {
-            if (m.getName().equals("set") && m.getParameterCount() == 2) {
-                return m;
-            }
+            if (m.getName().equals("set") && m.getParameterCount() == 2) return m;
         }
         throw new NoSuchMethodException("DataComponentPatch.Builder#set not found");
     }
 
     private Method findPatchRemoveMethod(Class<?> builderClass) throws NoSuchMethodException {
         for (Method m : builderClass.getMethods()) {
-            if (m.getName().equals("remove") && m.getParameterCount() == 1) {
-                return m;
-            }
+            if (m.getName().equals("remove") && m.getParameterCount() == 1) return m;
         }
         throw new NoSuchMethodException("DataComponentPatch.Builder#remove not found");
     }
@@ -189,9 +185,7 @@ public class PaperSwordBlockingEvent {
             if (m.getReturnType() != boolean.class) continue;
 
             Class<?> param = m.getParameterTypes()[0];
-            if (param.isInstance(tagInstance) || param.getName().contains("TagKey")) {
-                return m;
-            }
+            if (param.isInstance(tagInstance) || param.getName().contains("TagKey")) return m;
         }
         throw new NoSuchMethodException("ItemStack#is(tag) not found");
     }
