@@ -68,6 +68,15 @@ public enum Lang {
     KB_HINT_RIGHT("menus.kb-editor.hint.right", "&fRight-click&7: -{0}"),
     KB_HINT_SHIFT_LEFT("menus.kb-editor.hint.shift-left", "&fShift+Left&7: +{0}"),
     KB_HINT_SHIFT_RIGHT("menus.kb-editor.hint.shift-right", "&fShift+Right&7: -{0}"),
+    KB_MAIN_EDITOR_TITLE("menus.kb-main-editor.title", "&8» &lKnockback: &e{0}"),
+    KB_HIT_EDITOR_NAME("menus.kb-main-editor.hit.name", "&e&lHit Knockback"),
+    KB_HIT_EDITOR_LORE("menus.kb-main-editor.hit.lore", "&7Configure horizontal, vertical,\n&7friction and sprint values.\n\n&eClick to edit"),
+    KB_PROJECTILE_EDITOR_NAME("menus.kb-main-editor.projectile.name", "&d&lProjectile Knockback"),
+    KB_PROJECTILE_EDITOR_LORE("menus.kb-main-editor.projectile.lore", "&7Configure knockback applied\n&7by snowballs and eggs.\n\n&eClick to edit"),
+    KB_ROD_EDITOR_NAME("menus.kb-main-editor.rod.name", "&6&lRod Knockback"),
+    KB_ROD_EDITOR_LORE("menus.kb-main-editor.rod.lore", "&7Configure knockback applied\n&7by the fishing rod.\n\n&eClick to edit"),
+    KB_PROJECTILE_EDITOR_TITLE("menus.kb-projectile-editor.title", "&8» &lProjectile KB: &d{0}"),
+    KB_ROD_EDITOR_TITLE("menus.kb-rod-editor.title", "&8» &lRod KB: &6{0}"),
 
     // Combat settings editor
     COMBAT_EDITOR_TITLE("menus.combat-editor.title", "&8» &lCombat: &c{0}"),
