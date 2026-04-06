@@ -34,7 +34,7 @@ public class RodKnockbackEditorMenu extends Menu {
             {"Vertical Limit", "vertical-limit", 0.005, 0.0, 5.0, Material.MAGMA_CREAM},
     };
 
-    private static final int[] SLOTS = {11, 13, 15};
+    private static final int[] SLOTS = {12, 14, 16};
 
     public RodKnockbackEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.KB_ROD_EDITOR_TITLE, profileId), 27, false);
@@ -103,7 +103,7 @@ public class RodKnockbackEditorMenu extends Menu {
             });
         }
 
-        buttons.put(22, backButton(() -> new KbMainEditorMenu(getManager(), player, profileId).open()));
+        buttons.put(23, backButton(() -> new KbMainEditorMenu(getManager(), player, profileId).open()));
         return buttons;
     }
 
