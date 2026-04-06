@@ -43,8 +43,7 @@ public class KbMainEditorMenu extends Menu {
     public Map<Integer, Button> getButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        // ── Slot 11: Hit Knockback ─────────────────────────────────────────
-        buttons.put(11, new Button() {
+        buttons.put(12, new Button() {
             @Override
             public ItemStack getItemStack() {
                 return new ItemBuilder(Material.IRON_SWORD)
@@ -61,8 +60,7 @@ public class KbMainEditorMenu extends Menu {
             }
         });
 
-        // ── Slot 13: Projectile Knockback ──────────────────────────────────
-        buttons.put(13, new Button() {
+        buttons.put(14, new Button() {
             @Override
             public ItemStack getItemStack() {
                 return new ItemBuilder(Material.SNOWBALL)
@@ -79,8 +77,7 @@ public class KbMainEditorMenu extends Menu {
             }
         });
 
-        // ── Slot 15: Rod Knockback ─────────────────────────────────────────
-        buttons.put(15, new Button() {
+        buttons.put(16, new Button() {
             @Override
             public ItemStack getItemStack() {
                 return new ItemBuilder(Material.FISHING_ROD)
@@ -97,7 +94,7 @@ public class KbMainEditorMenu extends Menu {
             }
         });
 
-        buttons.put(50, backButton(() -> new ProfileEditorMenu(getManager(), player, profileId).open()));
+        buttons.put(23, backButton(() -> new ProfileEditorMenu(getManager(), player, profileId).open()));
         return buttons;
     }
 
