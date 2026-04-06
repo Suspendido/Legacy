@@ -153,6 +153,7 @@ public class ProyectileListener extends Module<ListenerManager> {
                     p.rodKbVertical,
                     p.rodKbVerticalLimit
             );
+            if (damaged == attacker) return;
             damaged.setVelocity(velocity);
         });
     }

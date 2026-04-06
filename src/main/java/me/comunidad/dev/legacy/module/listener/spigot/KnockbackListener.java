@@ -9,6 +9,7 @@ import me.comunidad.dev.legacy.module.listener.ListenerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -69,7 +70,6 @@ public class KnockbackListener extends Module<ListenerManager> {
 
         if (damaged.getUniqueId().equals(damager.getUniqueId())) return;
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
-
         if (damaged.getNoDamageTicks() > damaged.getMaximumNoDamageTicks() / 2) return;
 
         removeKnockbackResistance(damaged);
@@ -97,16 +97,33 @@ public class KnockbackListener extends Module<ListenerManager> {
         double magnitude = Math.sqrt(dx * dx + dz * dz);
         Vector velocity  = damaged.getVelocity();
 
-        velocity.setX(velocity.getX() / 2 - dx / magnitude * p.kbHorizontal);
-        velocity.setY(velocity.getY() / 2 + p.kbVertical);
-        velocity.setZ(velocity.getZ() / 2 - dz / magnitude * p.kbHorizontal);
+        if (p.kbFriction != 0) {
+            velocity.setX(velocity.getX() / p.kbFriction);
+            velocity.setY(velocity.getY() / p.kbFriction);
+            velocity.setZ(velocity.getZ() / p.kbFriction);
+        }
 
+        velocity.setX(velocity.getX() - dx / magnitude * p.kbHorizontal);
+        velocity.setY(velocity.getY() + p.kbVertical);
+        velocity.setZ(velocity.getZ() - dz / magnitude * p.kbHorizontal);
+
+        // dynamicLimit: si supera el límite, poner a 0 en vez de clampar
         if (velocity.getY() > p.kbVerticalLimit) {
-            velocity.setY(p.kbVerticalLimit);
+            velocity.setY(p.kbDynamicLimit ? 0.0 : p.kbVerticalLimit);
+        }
+
+        if (p.kbLimitHorizontal) {
+            double hl = p.kbHorizontalLimit;
+            if (Math.abs(velocity.getX()) > hl) velocity.setX(Math.signum(velocity.getX()) * hl);
+            if (Math.abs(velocity.getZ()) > hl) velocity.setZ(Math.signum(velocity.getZ()) * hl);
         }
 
         double extra = getExtraKnockback(attacker);
-        if (extra > 0) {
+
+        // el extra solo aplica si los jugadores NO van en la misma dirección (1.7 related)
+        boolean applyExtra = !p.kbOnePointSeven || !sameDirection(attacker, damaged);
+
+        if (extra > 0 && applyExtra) {
             float yaw = attacker.getLocation().getYaw() * ((float) Math.PI / 180F);
             velocity.add(new Vector(
                     -Math.sin(yaw) * extra * p.kbExtraHorizontal,
@@ -121,8 +138,7 @@ public class KnockbackListener extends Module<ListenerManager> {
 
     private double getExtraKnockback(Player attacker) {
         ProfileManager p = getInstance().getProfileManager();
-        double kb = attacker.getInventory().getItemInMainHand().getEnchantmentLevel(
-                org.bukkit.enchantments.Enchantment.KNOCKBACK);
+        double kb = attacker.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.KNOCKBACK);
 
         if (!attacker.isSprinting()) return kb;
 
@@ -132,5 +148,13 @@ public class KnockbackListener extends Module<ListenerManager> {
         }
 
         return kb + p.kbSprintModifier;
+    }
+
+    private boolean sameDirection(Player a, Player b) {
+        Vector va = a.getVelocity();
+        Vector vb = b.getVelocity();
+        boolean sameX = Math.signum(va.getX()) == Math.signum(vb.getX());
+        boolean sameZ = Math.signum(va.getZ()) == Math.signum(vb.getZ());
+        return sameX && sameZ;
     }
 }
