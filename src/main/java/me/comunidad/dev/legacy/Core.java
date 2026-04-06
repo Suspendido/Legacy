@@ -69,12 +69,12 @@ public final class Core extends JavaPlugin {
         this.managers.forEach(Manager::enable);
         this.loaded = true;
 
-        Logger.state("Enabled", managers.size());
+        Logger.state("Enabled");
     }
 
 
     public void onDisable() {
         this.managers.forEach(Manager::disable);
-        Logger.state("Disabled", managers.size());
+        Logger.state("Disabled");
     }
 }

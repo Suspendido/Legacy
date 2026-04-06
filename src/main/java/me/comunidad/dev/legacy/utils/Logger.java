@@ -4,9 +4,7 @@ import org.bukkit.Bukkit;
 
 public class Logger {
 
-    public static final String LINE_CONSOLE = CC.t("&7&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-    public static void state(String state, int managers) {
+    public static void state(String state) {
         print("");
         print("       &5&lLegacyCombat &fv" + Bukkit.getPluginManager().getPlugin("Legacy").getDescription().getVersion());
         print("");
