@@ -28,6 +28,11 @@ public class ProfileManager extends Manager {
     public double kbSprintModifier;
     public double kbSprintResetModifier;
     public boolean requiredGroundCheck;
+    public double kbFriction;
+    public boolean kbDynamicLimit;
+    public boolean kbLimitHorizontal;
+    public double kbHorizontalLimit;
+    public boolean kbOnePointSeven;
 
     // Knockback (Projectile)
     public double projKbHorizontal;
@@ -172,6 +177,11 @@ public class ProfileManager extends Manager {
         kbSprintModifier = doubles(path + ".knockback.sprint-modifier", 0.5);
         kbSprintResetModifier = doubles(path + ".knockback.sprint-reset-mod", 1.0);
         requiredGroundCheck = booleans(path + ".knockback.ground_check", true);
+        kbFriction = doubles(path + ".knockback.friction", 2.0);
+        kbDynamicLimit = booleans(path + ".knockback.dynamic-limit", false);
+        kbLimitHorizontal = booleans(path + ".knockback.limit-horizontal", false);
+        kbHorizontalLimit = doubles(path + ".knockback.horizontal-limit", 0.45);
+        kbOnePointSeven = booleans(path + ".knockback.one-point-seven", false);
 
         // Knockback (Projectile)
         projKbHorizontal = doubles(path + ".knockback-projectile.horizontal", 0.35);
@@ -179,9 +189,9 @@ public class ProfileManager extends Manager {
         projKbVerticalLimit = doubles(path + ".knockback-projectile.vertical-limit", 0.40);
 
         // Knockback (Rod)
-        rodKbHorizontal = doubles(path + "knockback-rod.horizontal", 0.35);
-        rodKbVertical = doubles(path + "knockback-rod.vertical", 0.35);
-        rodKbVerticalLimit = doubles(path + "knockback-rod.vertical-limit", 0.4);
+        rodKbHorizontal = doubles(path + ".knockback-rod.horizontal", 0.35);
+        rodKbVertical = doubles(path + ".knockback-rod.vertical", 0.35);
+        rodKbVerticalLimit = doubles(path + ".knockback-rod.vertical-limit", 0.4);
 
         // Combat
         playerNoDamageTicks = ints(path + ".combat.no-damage-ticks.player", 19);

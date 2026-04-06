@@ -3,6 +3,7 @@ package me.comunidad.dev.legacy.module.combat.menu.editor;
 import me.comunidad.dev.legacy.framework.menu.Menu;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
 import me.comunidad.dev.legacy.framework.menu.button.Button;
+import me.comunidad.dev.legacy.module.combat.menu.editor.knockback.KbMainEditorMenu;
 import me.comunidad.dev.legacy.module.lang.Lang;
 import me.comunidad.dev.legacy.module.lang.LangManager;
 import me.comunidad.dev.legacy.utils.ItemBuilder;
@@ -63,7 +64,7 @@ public class ProfileEditorMenu extends Menu {
             public void onClick(InventoryClickEvent e) {
                 e.setCancelled(true);
                 playNeutral(player);
-                new KnockbackEditorMenu(getManager(), player, profileId).open();
+                new KbMainEditorMenu(getManager(), player, profileId).open();
             }
         });
 

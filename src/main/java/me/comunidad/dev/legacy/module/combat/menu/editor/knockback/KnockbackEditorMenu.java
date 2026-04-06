@@ -1,4 +1,4 @@
-package me.comunidad.dev.legacy.module.combat.menu.editor;
+package me.comunidad.dev.legacy.module.combat.menu.editor.knockback;
 
 import me.comunidad.dev.legacy.framework.menu.Menu;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
@@ -17,28 +17,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Copyright (c) 2026. @Comunidad, made since 2/4/2026
- * Use or redistribution of this source file is only permitted
- * if explicit permission is given by the author.
- */
 public class KnockbackEditorMenu extends Menu {
 
     private final String profileId;
     private final String base;
 
+    /**
+     * Columnas: label, sub-path, step, min, max, material, isBoolean
+     * isBoolean=true → toggle; step/min/max ignorados (usar 0)
+     */
     private static final Object[][] FIELDS = {
             {"Horizontal", "horizontal", 0.005, 0.0, 5.0, Material.BLAZE_ROD, false},
             {"Vertical", "vertical", 0.005, 0.0, 5.0, Material.BLAZE_POWDER, false},
             {"Vertical Limit", "vertical-limit", 0.005, 0.0, 5.0, Material.MAGMA_CREAM, false},
             {"Extra Vertical", "extra-vertical", 0.005, 0.0, 5.0, Material.FIRE_CHARGE, false},
             {"Extra Horizontal", "extra-horizontal", 0.005, 0.0, 5.0, Material.GLOWSTONE_DUST, false},
-            {"Sprint Modifier", "sprint-modifier",  0.05,  0.0, 5.0, Material.FEATHER, false},
-            {"Sprint Reset Modifier", "sprint-reset-mod", 0.05,  0.0, 5.0, Material.RABBIT_FOOT, false},
-            {"Ground Check", "ground-check", 0, 0, 0, Material.GRASS_BLOCK, true},
+            {"Sprint Modifier", "sprint-modifier", 0.05, 0.0, 5.0, Material.FEATHER, false},
+            {"Sprint Reset Modifier", "sprint-reset-mod", 0.05, 0.0, 5.0, Material.RABBIT_FOOT, false},
+            {"Friction", "friction", 0.1, 0.0, 10.0, Material.SLIME_BALL, false},
+            {"Horizontal Limit", "horizontal-limit", 0.005, 0.0, 5.0, Material.BARRIER, false},
+            {"Ground Check", "ground_check", 0, 0, 0, Material.GRASS_BLOCK, true},
+            {"Dynamic Y-Limit", "dynamic-limit", 0, 0, 0, Material.PISTON, true},
+            {"Limit Horizontal", "limit-horizontal", 0, 0, 0, Material.IRON_BARS, true},
+            {"1.7 Knockback", "one-point-seven", 0, 0, 0, Material.GOLDEN_SWORD, true},
     };
 
-    private static final int[] SLOTS = {11, 13, 15, 17, 29, 31, 33, 35};
+    private static final int[] SLOTS = {11, 12, 13, 14, 15, 16, 17, 29, 30, 32, 33, 34, 35};
 
     public KnockbackEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.KB_EDITOR_TITLE, profileId), 54, false);
@@ -126,7 +130,7 @@ public class KnockbackEditorMenu extends Menu {
             });
         }
 
-        buttons.put(50, backButton(() -> new ProfileEditorMenu(getManager(), player, profileId).open()));
+        buttons.put(50, backButton(() -> new KbMainEditorMenu(getManager(), player, profileId).open()));
         return buttons;
     }
 
