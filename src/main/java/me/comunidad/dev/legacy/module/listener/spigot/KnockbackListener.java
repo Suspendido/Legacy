@@ -71,6 +71,7 @@ public class KnockbackListener extends Module<ListenerManager> {
         if (damaged.getUniqueId().equals(damager.getUniqueId())) return;
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
         if (damaged.getNoDamageTicks() > damaged.getMaximumNoDamageTicks() / 2) return;
+        if (!getInstance().getProfileManager().kbEnabled) return;
 
         removeKnockbackResistance(damaged);
         applyCustomKnockback(damaged, damager);
