@@ -36,13 +36,14 @@ public class KnockbackEditorMenu extends Menu {
             {"Sprint Reset Modifier", "sprint-reset-mod", 0.05, 0.0, 5.0, Material.RABBIT_FOOT, false},
             {"Friction", "friction", 0.1, 0.0, 10.0, Material.SLIME_BALL, false},
             {"Horizontal Limit", "horizontal-limit", 0.005, 0.0, 5.0, Material.BARRIER, false},
+            {"Knockback Enabled", "enabled", 0, 0, 0, Material.BRUSH, true},
             {"Ground Check", "ground_check", 0, 0, 0, Material.GRASS_BLOCK, true},
             {"Dynamic Y-Limit", "dynamic-limit", 0, 0, 0, Material.PISTON, true},
             {"Limit Horizontal", "limit-horizontal", 0, 0, 0, Material.IRON_BARS, true},
             {"1.7 Knockback", "one-point-seven", 0, 0, 0, Material.GOLDEN_SWORD, true},
     };
 
-    private static final int[] SLOTS = {11, 12, 13, 14, 15, 16, 17, 29, 30, 32, 33, 34, 35};
+    private static final int[] SLOTS = {11, 12, 13, 14, 15, 16, 17, 29, 30, 31, 32, 33, 34, 35};
 
     public KnockbackEditorMenu(MenuManager manager, Player player, String profileId) {
         super(manager, player, manager.getInstance().getLangManager().of(Lang.KB_EDITOR_TITLE, profileId), 54, false);

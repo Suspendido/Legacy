@@ -37,7 +37,9 @@ public class KbMainEditorMenu extends Menu {
         setFiller(filler);
     }
 
-    private LangManager lang() { return getInstance().getLangManager(); }
+    private LangManager lang() {
+        return getInstance().getLangManager();
+    }
 
     @Override
     public Map<Integer, Button> getButtons(Player player) {
