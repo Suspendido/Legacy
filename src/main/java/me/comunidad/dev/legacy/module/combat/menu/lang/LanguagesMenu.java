@@ -27,14 +27,14 @@ public class LanguagesMenu extends Menu {
 
     // { langId, displayName, icon }
     private static final Object[][] LANGUAGES = {
-            {"es_lang", "§6Español",        Material.ORANGE_TERRACOTTA},
-            {"en_lang", "§bEnglish",        Material.LIGHT_BLUE_TERRACOTTA},
-            {"pt_lang", "§aPortuguês",      Material.GREEN_TERRACOTTA},
-            {"fr_lang", "§9Français",       Material.BLUE_TERRACOTTA},
-            {"de_lang", "§7Deutsch",        Material.GRAY_TERRACOTTA},
-            {"it_lang", "§cItaliano",       Material.RED_TERRACOTTA},
-            {"zh_lang", "§dChinese (中文)",  Material.PINK_TERRACOTTA},
-            {"ru_lang", "§4Русский",        Material.BROWN_TERRACOTTA},
+            {"es_lang", "§6Español", Material.ORANGE_TERRACOTTA, "&aTraducción Oficial"},
+            {"en_lang", "§bEnglish", Material.LIGHT_BLUE_TERRACOTTA, "&aOfficial Translation"},
+            {"pt_lang", "§aPortuguês", Material.GREEN_TERRACOTTA, "&aTradução oficial"},
+            {"fr_lang", "§9Français", Material.BLUE_TERRACOTTA, "&c&o0% Translated"},
+            {"de_lang", "§7Deutsch", Material.GRAY_TERRACOTTA, "&c&o0% Translated"},
+            {"it_lang", "§cItaliano", Material.RED_TERRACOTTA, "&c&o0% Translated"},
+            {"zh_lang", "§dChinese (中文)", Material.PINK_TERRACOTTA, "&c&o0% Translated"},
+            {"ru_lang", "§4Русский", Material.BROWN_TERRACOTTA, "&c&o0% Translated"},
     };
 
     private static final int[] SLOTS = {11, 13, 15, 17, 29, 31, 33, 35};
@@ -66,6 +66,7 @@ public class LanguagesMenu extends Menu {
             final String id = (String) LANGUAGES[i][0];
             final String name = (String) LANGUAGES[i][1];
             final Material mat = (Material) LANGUAGES[i][2];
+            final String desc = (String) LANGUAGES[i][3];
             final boolean active = id.equals(activeLang);
             final int slot = SLOTS[i];
 
@@ -76,6 +77,8 @@ public class LanguagesMenu extends Menu {
                     lore.add(lang().of(Lang.LANG_LORE_ID, id));
                     lore.add(lang().of(Lang.LANG_LORE_STATUS, active ? lang().of(Lang.LANG_STATUS_ACTIVE) : lang().of(Lang.LANG_STATUS_INACTIVE)));
                     lore.add("");
+                    lore.add(desc);
+                    lore.add("");
                     lore.add(active ? lang().of(Lang.LANG_LORE_SELECTED) : lang().of(Lang.LANG_LORE_CLICK));
                     return new ItemBuilder(mat).setName(name).setLore(lore).toItemStack();
                 }
@@ -83,7 +86,11 @@ public class LanguagesMenu extends Menu {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     e.setCancelled(true);
-                    if (active) return;
+                    if (active) {
+                        playFail(player);
+                        sendMessage(player, lang().of(Lang.LANG_ALREADY_ACTIVE, name));
+                        return;
+                    }
 
                     lang().reload(id);
                     sendMessage(player, lang().of(Lang.LANG_CHANGED, name));
