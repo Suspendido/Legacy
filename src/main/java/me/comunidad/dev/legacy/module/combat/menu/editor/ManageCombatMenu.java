@@ -27,11 +27,9 @@ import java.util.Set;
 public class ManageCombatMenu extends PaginatedMenu {
 
     public ManageCombatMenu(MenuManager manager, Player player) {
-        super(manager, player,
-                manager.getInstance().getLangManager().of(Lang.MANAGE_MENU_TITLE),
-                3*9, true
-        );
-        this.defaultButtons.put(5, backButton(() -> new MainMenu(getManager(), player).open()));
+        super(manager, player, manager.getInstance().getLangManager().of(Lang.MANAGE_MENU_TITLE), 3*9, true);
+        this.defaultButtons.put(4, createButton());
+        this.defaultButtons.put(6, backButton(() -> new MainMenu(getManager(), player).open()));
     }
 
     private LangManager lang() {
@@ -58,8 +56,9 @@ public class ManageCombatMenu extends PaginatedMenu {
             lore.add(lang().of(Lang.MANAGE_PROFILE_LORE_STATUS,
                     isActive ? lang().of(Lang.MANAGE_PROFILE_STATUS_ACTIVE) : lang().of(Lang.MANAGE_PROFILE_STATUS_INACTIVE)));
             lore.add("");
-            lore.add(lang().of(Lang.MANAGE_PROFILE_LORE_EDIT));
             if (!isActive) lore.add(lang().of(Lang.MANAGE_PROFILE_LORE_ACTIVATE));
+            lore.add(lang().of(Lang.MANAGE_PROFILE_LORE_EDIT));
+            lore.add(lang().of(Lang.MANAGE_PROFILE_LORE_DELETE));
 
             final String finalName = displayName;
             final List<String> finalLore = lore;
@@ -75,14 +74,22 @@ public class ManageCombatMenu extends PaginatedMenu {
 
                 @Override
                 public void onClick(InventoryClickEvent e) {
-                    e.setCancelled(true);
+                    if (e.getClick() == ClickType.CONTROL_DROP) {
+                        getInstance().getProfileManager().delete(id);
+                        sendMessage(player, lang().of(Lang.MANAGE_DELETED, id));
+                        new ManageCombatMenu(getManager(), player).open();
+                        playSuccess(player);
+                        return;
+                    }
+
                     if (e.getClick() == ClickType.RIGHT && !isActive) {
                         getInstance().getProfileManager().activate(id);
                         sendMessage(player, lang().of(Lang.MANAGE_ACTIVATED, id));
                         new ManageCombatMenu(getManager(), player).open();
-                        playNeutral(player);
+                        playSuccess(player);
                         return;
                     }
+
                     new ProfileEditorMenu(getManager(), player, id).open();
                     playNeutral(player);
                 }
@@ -123,6 +130,24 @@ public class ManageCombatMenu extends PaginatedMenu {
                 e.setCancelled(true);
                 playNeutral(player);
                 action.run();
+            }
+        };
+    }
+
+    private Button createButton() {
+        return new Button() {
+            @Override
+            public ItemStack getItemStack() {
+                return new ItemBuilder(Material.WRITABLE_BOOK)
+                        .setName(lang().of(Lang.MANAGE_CREATE_PROFILE_NAME))
+                        .setLore(lang().loreOf(Lang.MANAGE_CREATE_PROFILE_LORE))
+                        .toItemStack();
+            }
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                e.setCancelled(true);
+                playNeutral(player);
+                new CreateProfileMenu(getManager(), player).open();
             }
         };
     }
