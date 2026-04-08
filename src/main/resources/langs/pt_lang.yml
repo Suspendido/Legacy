@@ -1,0 +1,145 @@
+generic:
+  back-button:
+    name: "&7&lVoltar"
+    lore: "&7Voltar ao menu anterior"
+  no-profiles-found:
+    name: "&cNenhum perfil encontrado"
+    lore: "&7Adicione perfis em &fprofiles.yml"
+
+menus:
+  value-editor:
+    title: "&8» &lEditar: &f{0}"
+    current: "&7Atual: &a{0}"
+    range: "&7Mín: &f{0}  Máx: &f{1}"
+    step: "&7Passo: &f{0}"
+    updated: "&aAtualizado &f{0} &apara &f{1}"
+    toggle: "&eClique &7para alternar"
+  
+  main:
+    title: "&8» &lEditor de Combate"
+    profiles:
+      name: "&b&lPerfis de Combate"
+      lore: "&7Gerencie repulsão, dano,\n&7tempos de recarga e mais por perfil.\n\n&eClique para abrir"
+    damage:
+      name: "&c&lDano de Ferramentas"
+      lore: "&7Configure os valores de dano\n&7para cada tipo de arma.\n\n&eClique para abrir"
+    languages:
+      name: "&a&lIdiomas"
+      lore: "&7Escolha o idioma ativo\n&7para as mensagens do servidor.\n\n&eClique para abrir"
+  
+  manage:
+    title: "&8» &lPerfis de Combate"
+    status:
+      active: "&aAtivo ✔"
+      inactive: "&7Inativo"
+    profile:
+      lore:
+        id: "&7ID: &f{0}"
+        status: "&7Estado: {0}"
+        edit: "&eClique esquerdo &7para editar"
+        activate: "&eClique direito &7para ativar"
+        delete: "&eCtrl+Q &7para excluir"
+    activated: "&aPerfil &f{0} &aativado"
+    deleted: "&cPerfil &f{0} &cexcluído com sucesso."
+    create:
+      name: "&a&l+ Criar Perfil"
+      lore: "&7Crie um novo perfil\n&7a partir de um modelo.\n\n&eClique para abrir"
+  
+  profile-editor:
+    title: "&8» &lPerfil: &b{0}"
+    knockback:
+      name: "&e&lRepulsão"
+      lore: "&7Horizontal: &f{0}\n&7Vertical: &f{1}\n\n&eClique para editar"
+    combat:
+      name: "&c&lConfigurações de Combate"
+      lore: "&7Tiques sem dano: &f{0}\n\n&eClique para editar"
+    damage:
+      name: "&6&lDano de Ferramentas"
+      lore: "&7Configure o dano por arma\n&7para este perfil.\n\n&eClique para editar"
+    projectiles:
+      name: "&d&lFísica de Projéteis"
+      lore: "&7Multiplicador de velocidade: &f{0}\n&7Gravidade: &f{1}\n\n&eClique para editar"
+    pearl:
+      name: "&5&lPérola de Ender"
+      lore: "&7Dano ao aterrissar: &f{0}\n&7Tempo de recarga (tiques): &f{1}\n\n&eClique para editar"
+    potion:
+      name: "&b&lConfigurações de Poções"
+      lore: "&7Multiplicador de velocidade: &f{0}\n&7Aumento de intensidade própria: &f{1}\n\n&eClique para editar"
+  
+  kb-editor:
+    title: "&8» &lRepulsão: &e{0}"
+    hint:
+      left: "&fClique esquerdo&7: +{0}"
+      right: "&fClique direito&7: -{0}"
+      shift-left: "&fShift + Esquerdo&7: +{0}"
+      shift-right: "&fShift + Direito&7: -{0}"
+  
+  kb-main-editor:
+    title: "&8» &lRepulsão: &e{0}"
+    hit:
+      name: "&e&lRepulsão de Golpe"
+      lore: "&7Configure horizontal, vertical,\n&7atrito e valores de corrida.\n\n&eClique para editar"
+    projectile:
+      name: "&d&lRepulsão de Projétil"
+      lore: "&7Configure a repulsão aplicada\n&7por bolas de neve e ovos.\n\n&eClique para editar"
+    rod:
+      name: "&6&lRepulsão de Vara de Pescar"
+      lore: "&7Configure a repulsão aplicada\n&7pela vara de pescar.\n\n&eClique para editar"
+  
+  kb-projectile-editor:
+    title: "&8» &lRepulsão de Projétil: &d{0}"
+  
+  kb-rod-editor:
+    title: "&8» &lRepulsão de Vara de Pescar: &6{0}"
+  
+  combat-editor:
+    title: "&8» &lCombate: &c{0}"
+  
+  damage:
+    title:
+      global: "&8» &lDano de Ferramentas (Global)"
+      profile: "&8» &lDano de Ferramentas: &6{0}"
+    current: "&7Dano: &a{0}"
+  
+  proj-editor:
+    title: "&8» &lProjéteis: &d{0}"
+  
+  pearl-editor:
+    title: "&8» &lConfigurações de Pérola: &5{0}"
+    updated: "&aAtualizado &5{0}"
+    toggle:
+      on: "&aAtivado"
+      off: "&cDesativado"
+  
+  potion-editor:
+    title: "&8» &lPoções: &b{0}"
+  
+  languages:
+    title: "&8» &lSeleção de Idioma"
+    status:
+      active: "&aAtivo ✔"
+      inactive: "&7Inativo"
+    lore:
+      id: "&7ID: &f{0}"
+      status: "&7Estado: {0}"
+      selected: "&7Já selecionado"
+      click: "&eClique para ativar"
+    changed: "&aIdioma alterado para &f{0}"
+    already-active: "&cEsse idioma já está ativo"
+  
+  create-profile:
+    title: "&8» &lCriar Perfil"
+    preset-18:
+      name: "&6&lModelo 1.8"
+      lore: "&7Sem tempo de recarga, bloqueio com espada,\n&7repulsão 1.8, física de pérola clássica.\n\n&eClique para selecionar"
+    preset-vanilla:
+      name: "&b&lVanilla 1.20"
+      lore: "&7Valores padrão de 1.20.\n&7Tempo de recarga de ataque, sem bloqueio,\n&7física de pérola vanilla.\n\n&eClique para selecionar"
+    prompt: "&eDigite o nome do perfil no chat.\n&7Digite &fcancelar &7para cancelar."
+    cancelled: "&cCriação de perfil cancelada."
+    exists: "&cJá existe um perfil com o ID &f{0}&c."
+    created: "&aPerfil &f{0} &acriado com sucesso."
+
+messages:
+  exploit:
+    invalid-pearl: "&cLocalização de Pérola Inválida"
