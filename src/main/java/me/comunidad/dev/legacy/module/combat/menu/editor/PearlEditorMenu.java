@@ -29,7 +29,7 @@ public class PearlEditorMenu extends Menu {
 
     private static final Object[][] FIELDS = {
             {"Damage on Land", "damage", 0.5, 0.0, 20.0, Material.ENDER_PEARL, false, false},
-            {"Speed on Launch", "speed", 0.005, 0.0, 1, Material.SUGAR, false, false},
+            {"Speed on Launch", "speed", 0.005, 0.0, 5, Material.SUGAR, false, false},
             {"Pearl Gravity", "gravity", 0.005, 0.0, 1, Material.FEATHER, false, false},
             {"Cooldown (ticks)", "cooldown-ticks", 1, 0, 2000, Material.CLOCK, true,  false},
     };
