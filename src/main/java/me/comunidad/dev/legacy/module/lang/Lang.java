@@ -45,7 +45,9 @@ public enum Lang {
     MANAGE_PROFILE_LORE_STATUS("menus.manage.profile.lore.status", "&7Status: {0}"),
     MANAGE_PROFILE_LORE_EDIT("menus.manage.profile.lore.edit", "&eLeft-click &7to edit"),
     MANAGE_PROFILE_LORE_ACTIVATE("menus.manage.profile.lore.activate", "&eRight-click &7to activate"),
+    MANAGE_PROFILE_LORE_DELETE("menus.manage.profile.lore.delete", "&eCtrl+Q &7to delete"),
     MANAGE_ACTIVATED("menus.manage.activated", "&aActivated profile &f{0}"),
+    MANAGE_DELETED("menus.manage.deleted", "&cProfile &f{0} &cdeleted successfully."),
 
     // Profile editor
     PROFILE_EDITOR_TITLE("menus.profile-editor.title", "&8» &lProfile: &b{0}"),
@@ -107,9 +109,25 @@ public enum Lang {
     LANG_LORE_SELECTED("menus.languages.lore.selected", "&7Already selected"),
     LANG_LORE_CLICK("menus.languages.lore.click", "&eClick to activate"),
     LANG_CHANGED("menus.languages.changed", "&aLanguage changed to &f{0}"),
+    LANG_ALREADY_ACTIVE("menus.languages.already-active", "&cLanguage already active"),
 
     // Exploit listener
-    EXPLOIT_INVALID_PEARL("messages.exploit.invalid-pearl", "&cInvalid Pearl Location");
+    EXPLOIT_INVALID_PEARL("messages.exploit.invalid-pearl", "&cInvalid Pearl Location"),
+
+    // ManageCombatMenu
+    MANAGE_CREATE_PROFILE_NAME ("menus.manage.create.name", "&a&l+ Create Profile"),
+    MANAGE_CREATE_PROFILE_LORE ("menus.manage.create.lore", "&7Create a new profile\n&7from a preset.\n\n&eClick to open"),
+
+    // CreateProfileMenu
+    CREATE_PROFILE_TITLE("menus.create-profile.title", "&8» &lCreate Profile"),
+    CREATE_PROFILE_PRESET_LEGACY_NAME("menus.create-profile.preset-18.name", "&6&l1.8 Preset"),
+    CREATE_PROFILE_PRESET_LEGACY_LORE("menus.create-profile.preset-18.lore", "&7No cooldown, sword blocking,\n&71.8 KB, legacy pearl physics.\n\n&eClick to select"),
+    CREATE_PROFILE_PRESET_MODERN_NAME("menus.create-profile.preset-vanilla.name", "&b&lVanilla 1.20"),
+    CREATE_PROFILE_PRESET_MODERN_LORE("menus.create-profile.preset-vanilla.lore", "&7Standard 1.20 values.\n&7Attack cooldown, no blocking,\n&7vanilla pearl physics.\n\n&eClick to select"),
+    CREATE_PROFILE_PROMPT("menus.create-profile.prompt", "&eType the profile name in chat.\n&7Type &fcancel &7to abort."),
+    CREATE_PROFILE_CANCELLED("menus.create-profile.cancelled", "&cProfile creation cancelled."),
+    CREATE_PROFILE_EXISTS("menus.create-profile.exists", "&cA profile with id &f{0} &calready exists."),
+    CREATE_PROFILE_CREATED("menus.create-profile.created", "&aProfile &f{0} &acreated successfully.");
 
     public final String path;
     public final String fallback;
