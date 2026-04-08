@@ -1,22 +1,42 @@
 profiles:
   default:
-    display-name: "&f&lDefault"
+    display-name: "&6Default"
     active: true
+
     knockback:
-      horizontal: 0.35
-      vertical: 0.35
-      vertical-limit: 0.4
-      extra-vertical: 0.085
-      extra-horizontal: 0.425
-      sprint-modifier: 0.5
-      sprint-reset-mod: 1.0
-      ground-check: true
+      enabled: true # enable knockback
+      horizontal: 0.35 # base horizontal push
+      vertical: 0.35 # base vertical push
+      vertical-limit: 0.4 # max Y velocity after KB
+      extra-vertical: 0.085 # extra Y added per sprint/enchant level
+      extra-horizontal: 0.425 # extra X/Z added per sprint/enchant level
+      sprint-modifier: 0.5 # added to KB when attacker is sprinting
+      sprint-reset-mod: 1.0 # added to KB on sprint-reset hit
+      ground_check: false # true = sprint-reset only counts if attacker is on ground
+      friction: 2.0 # victim velocity divided by this before KB (vanilla≈2)
+      dynamic-limit: false # true = set Y to 0 when exceeding vertical-limit instead of clamping
+      limit-horizontal: false # true = clamp X/Z velocity to horizontal-limit
+      horizontal-limit: 0.45 # max X/Z velocity when limit-horizontal is true
+      one-point-seven: false # true = extra KB only applies when players move in opposite directions
+
+    knockback-projectile:
+      horizontal: 0.35 # base horizontal push
+      vertical: 0.35 # base vertical push
+      vertical-limit: 0.4 # max Y velocity after KB
+
+    knockback-rod:
+      horizontal: 0.35 # base horizontal push
+      vertical: 0.35 # base vertical push
+      vertical-limit: 0.4 # max Y velocity after KB
+
     combat:
       no-damage-ticks:
-        player: 19
-        mob: 10
-      attack-speed: 1024.0
-      block-hit: true
+        player: 19 # ticks between hits for players (vanilla=20)
+        mob: 10 # ticks between hits for mobs
+      attack-speed: 1024.0 # base attack speed attribute (high = no cooldown bar)
+      block-hit: true # true = players can right-click to block with swords
+    
+    # Tool damage
     tool-damage:
       swords:
         wood: 4.0
@@ -34,26 +54,30 @@ profiles:
       shovel: 1.0
       hoe: 1.0
       trident: 8.0
+
     projectiles:
       potion:
-        speed-multiplier: 0.5
-        y-offset: 0.1
-        player-vel-x: 1.0
-        player-vel-z: 1.0
+        speed-multiplier: 0.5 # scale factor for thrown potion velocity
+        y-offset: 0.1 # upward bump added to velocity on throw
+        player-vel-x: 1.0 # how much thrower X momentum carries over
+        player-vel-z: 1.0 # how much thrower Z momentum carries over
       arrow:
-        speed: 1.0
-        gravity: 0.05
+        speed: 1.0 # velocity multiplier (1.0 = vanilla)
+        gravity: 0.05 # vanilla = 0.05; lower = flatter arc; 0 = no gravity
       snowball:
-        speed: 1.0
+        speed: 1.0 # vanilla speed = 1.0
+        gravity: 0.03 # vanilla snowball gravity = 0.03
       trident:
-        speed: 1.0
+        speed: 1.0 # vanilla speed = 1.0
+        gravity: 0.05 # vanilla trident gravity = 0.05
+
     pearls:
-      damage: 5.0
-      cooldown-ticks: 20
-      ground-check: 0
+      damage: 5.0 # damage on landing (0 = no damage)
+      cooldown-ticks: 20 # cooldown after throwing in ticks (20t = 1s)
+      speed: 1.5 # launch speed — 1.8 style, no player velocity inheritance
+      gravity: 0.03 # vanilla pearl gravity = 0.03
+
     potions:
-      speed-multiplier: 0.5
-      player-vel-contribution: 1.0
-      self-intensity-boost: 0.3
-      min-self-intensity: 0.6
-      max-intensity-cap: 1.0
+      self-intensity-boost: 0.3 # bonus intensity when hitting yourself while sprinting
+      min-self-intensity: 0.6 # minimum intensity required to trigger self-boost
+      max-intensity-cap: 1.0 # maximum intensity after boost
