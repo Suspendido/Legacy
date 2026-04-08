@@ -23,11 +23,13 @@ public class ListenerManager extends Manager {
 
     private final List<Listener> listeners;
     private final List<BukkitTask> tasks;
+    private final CombatListener combatListener;
 
     public ListenerManager(Core instance) {
         super(instance);
         this.listeners = new ArrayList<>();
         this.tasks = new ArrayList<>();
+        this.combatListener = new CombatListener(this);
         this.load();
     }
 
@@ -36,7 +38,7 @@ public class ListenerManager extends Manager {
                 new KnockbackListener(this),
                 new PotionListener(this),
                 new PreventionListener(this),
-                new CombatListener(this),
+//                new CombatListener(this),
                 new ProyectileListener(this),
                 new ArrowGravityListener(this)
         ));

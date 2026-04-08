@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import lombok.Getter;
 import me.comunidad.dev.legacy.framework.Module;
 import me.comunidad.dev.legacy.module.combat.ProfileManager;
 import me.comunidad.dev.legacy.module.listener.events.PaperSwordBlockingEvent;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Getter
 public class CombatListener extends Module<ListenerManager> {
 
     private final Set<String> blockedSounds = new HashSet<>();
@@ -69,7 +71,7 @@ public class CombatListener extends Module<ListenerManager> {
         cancelSweep();
     }
 
-    private boolean blockingEnabled() {
+    public boolean blockingEnabled() {
         return swordBlocking != null && getInstance().getProfileManager().blockhit;
     }
 
@@ -353,5 +355,31 @@ public class CombatListener extends Module<ListenerManager> {
                     }
                 }
         );
+    }
+
+    public void clearBlockingFromAllPlayers() {
+        if (swordBlocking == null) return;
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            if (isSword(mainHand.getType())) {
+                clearIfSword(mainHand);
+                player.getInventory().setItemInMainHand(mainHand);
+            }
+
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (isSword(offHand.getType())) {
+                clearIfSword(offHand);
+                player.getInventory().setItemInOffHand(offHand);
+            }
+
+            for (int i = 0; i < player.getInventory().getSize(); i++) {
+                ItemStack item = player.getInventory().getItem(i);
+                if (item != null && isSword(item.getType())) {
+                    clearIfSword(item);
+                    player.getInventory().setItem(i, item);
+                }
+            }
+        });
     }
 }

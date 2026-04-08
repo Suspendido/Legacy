@@ -27,11 +27,12 @@ public class ProfileManager extends Manager {
     public double kbExtraHorizontal;
     public double kbSprintModifier;
     public double kbSprintResetModifier;
-    public boolean requiredGroundCheck;
+    public double kbHorizontalLimit;
     public double kbFriction;
+    public boolean kbEnabled;
+    public boolean requiredGroundCheck;
     public boolean kbDynamicLimit;
     public boolean kbLimitHorizontal;
-    public double kbHorizontalLimit;
     public boolean kbOnePointSeven;
 
     // Knockback (Projectile)
@@ -130,6 +131,10 @@ public class ProfileManager extends Manager {
                 entity.setMaximumNoDamageTicks(mobNoDamageTicks);
             }
         }));
+
+        if (!blockhit) {
+            getInstance().getListenerManager().getCombatListener().clearBlockingFromAllPlayers();
+        }
     }
 
     public void enable() {
@@ -167,6 +172,15 @@ public class ProfileManager extends Manager {
         reload();
     }
 
+    public void delete(String profileId) {
+        ConfigurationSection root = getProfilesConfig().getConfigurationSection("profiles");
+        if (root != null) {
+            root.set(profileId, null);
+            getProfilesConfig().save();
+        }
+        reload();
+    }
+
     private void loadFrom(String path) {
         // Knockback (Hits)
         kbHorizontal = doubles(path + ".knockback.horizontal", 0.35);
@@ -176,11 +190,12 @@ public class ProfileManager extends Manager {
         kbExtraHorizontal = doubles(path + ".knockback.extra-horizontal", 0.425);
         kbSprintModifier = doubles(path + ".knockback.sprint-modifier", 0.5);
         kbSprintResetModifier = doubles(path + ".knockback.sprint-reset-mod", 1.0);
-        requiredGroundCheck = booleans(path + ".knockback.ground_check", true);
+        kbHorizontalLimit = doubles(path + ".knockback.horizontal-limit", 0.45);
         kbFriction = doubles(path + ".knockback.friction", 2.0);
+        kbEnabled = booleans(path + ".knockback.enabled", true);
+        requiredGroundCheck = booleans(path + ".knockback.ground_check", true);
         kbDynamicLimit = booleans(path + ".knockback.dynamic-limit", false);
         kbLimitHorizontal = booleans(path + ".knockback.limit-horizontal", false);
-        kbHorizontalLimit = doubles(path + ".knockback.horizontal-limit", 0.45);
         kbOnePointSeven = booleans(path + ".knockback.one-point-seven", false);
 
         // Knockback (Projectile)
