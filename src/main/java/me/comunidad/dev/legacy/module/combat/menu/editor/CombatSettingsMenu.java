@@ -29,7 +29,7 @@ public class CombatSettingsMenu extends Menu {
 
     private static final Object[][] FIELDS = {
             {"Player No-Damage Ticks", "no-damage-ticks.player", 1, 1, 40, Material.PLAYER_HEAD, true, false},
-            {"Mob No-Damage Ticks", "no-damage-ticks.mob", 1, 1, 40,   Material.ZOMBIE_HEAD, true, false},
+            {"Mob No-Damage Ticks", "no-damage-ticks.mob", 1, 1, 40, Material.ZOMBIE_HEAD, true, false},
             {"Attack Speed", "attack-speed", 16.0, 4, 1024, Material.CLOCK, false, false},
             {"Block Hit", "block-hit", 0, 0, 0, Material.DIAMOND, false, true},
     };

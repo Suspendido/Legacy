@@ -261,7 +261,7 @@ public class ProfileManager extends Manager {
     }
 
     private boolean booleans(String path, boolean def) {
-        return getProfilesConfig().getBoolean(path) ? getProfilesConfig().getBoolean(path) : def;
+        return getProfilesConfig().contains(path) ? getProfilesConfig().getBoolean(path) : def;
     }
 
     private int ints(String path, int def) {
