@@ -47,6 +47,7 @@ public class PreventionListener extends Module<ListenerManager> {
         if (type == Material.STRING) return true;
         if (name.endsWith("_FENCE")) return true;
         if (name.endsWith("_STAINED_GLASS_PANE") || name.contains("GLASS_PANE")) return true;
+        if (name.contains("CHEST")) return true;
         if (name.endsWith("_WALL")) return true;
 
         if (block.getBlockData() instanceof Gate gate) {
