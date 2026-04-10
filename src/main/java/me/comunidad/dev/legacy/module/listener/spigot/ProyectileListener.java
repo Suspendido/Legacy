@@ -9,6 +9,7 @@ import me.comunidad.dev.legacy.framework.Module;
 import me.comunidad.dev.legacy.module.combat.ProfileManager;
 import me.comunidad.dev.legacy.module.listener.ListenerManager;
 import me.comunidad.dev.legacy.utils.Tasks;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.*;
@@ -19,9 +20,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /*
  * Copyright (c) 2026. @Comunidad, made since 3/4/2026
@@ -31,6 +30,7 @@ import java.util.UUID;
 public class ProyectileListener extends Module<ListenerManager> {
 
     private final Set<UUID> rodHit = new HashSet<>();
+    private final Map<Integer, UUID> hiddenHooks = new HashMap<>();
 
     private static final Set<String> ROD_SOUNDS = Set.of(
             "entity.fishing_bobber.throw"
@@ -39,6 +39,7 @@ public class ProyectileListener extends Module<ListenerManager> {
     public ProyectileListener(ListenerManager manager) {
         super(manager);
         cancelRodSounds();
+        cancelHook();
     }
 
     private ProfileManager profile() {
@@ -83,6 +84,23 @@ public class ProyectileListener extends Module<ListenerManager> {
         );
     }
 
+    private void cancelHook() {
+        ProtocolLibrary.getProtocolManager().addPacketListener(
+                new PacketAdapter(getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.ENTITY_METADATA) {
+                    @Override
+                    public void onPacketSending(PacketEvent event) {
+                        try {
+                            int id = event.getPacket().getIntegers().read(0);
+                            UUID target = hiddenHooks.get(id);
+                            if (target != null && event.getPlayer().getUniqueId().equals(target)) {
+                                event.setCancelled(true);
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                }
+        );
+    }
+
     @EventHandler
     public void onVelocity(PlayerVelocityEvent e) {
         if (!rodHit.contains(e.getPlayer().getUniqueId())) return;
@@ -94,78 +112,60 @@ public class ProyectileListener extends Module<ListenerManager> {
         Projectile entity = e.getEntity();
         if (!(entity.getShooter() instanceof Player player)) return;
 
-        ProfileManager p = profile();
-
-        if (entity instanceof EnderPearl pearl) {
-            applyLegacyPearl(player, pearl, p.pearlSpeed, p.pearlGravity);
-
-        } else if (entity instanceof Arrow arrow) {
-            applySpeed(arrow, p.arrowSpeed);
-            applyGravity(arrow, p.arrowGravity, 0.05);
-
-        } else if (entity instanceof Snowball || entity instanceof Egg) {
-            applySpeed(entity, p.snowballSpeed);
-            applyGravity(entity, p.snowballGravity, 0.03);
-
-        } else if (entity instanceof Trident trident) {
-            applySpeed(trident, p.tridentSpeed);
-            applyGravity(trident, p.tridentGravity, 0.05);
+        switch (entity) {
+            case EnderPearl pearl -> {
+                pearl.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(profile().pearlSpeed));
+                applyGravity(pearl, profile().pearlGravity, 0.03);
+            }
+            case Arrow arrow -> {
+                applySpeed(arrow, profile().arrowSpeed);
+                applyGravity(arrow, profile().arrowGravity, 0.05);
+            }
+            case Snowball s -> {
+                applySpeed(s, profile().snowballSpeed);
+                applyGravity(s, profile().snowballGravity, 0.03);
+            }
+            case Egg egg -> {
+                applySpeed(egg, profile().snowballSpeed);
+                applyGravity(egg, profile().snowballGravity, 0.03);
+            }
+            case Trident trident -> {
+                applySpeed(trident, profile().tridentSpeed);
+                applyGravity(trident, profile().tridentGravity, 0.05);
+            }
+            default -> {}
         }
     }
 
     @EventHandler
     public void onProyectileHit(ProjectileHitEvent e) {
         Projectile projectile = e.getEntity();
-
-        if (!(projectile instanceof Snowball || projectile instanceof Egg)) return;
-        if (!(e.getHitEntity() instanceof Player player)) return;
+        if (!(projectile instanceof Snowball || projectile instanceof Egg || projectile instanceof Arrow || projectile instanceof FishHook)) return;
+        if (!(e.getHitEntity() instanceof Player damaged)) return;
+        if (damaged.getGameMode() == GameMode.CREATIVE) return;
         if (!(projectile.getShooter() instanceof Player shooter)) return;
+        if (damaged == shooter) return;
 
-        player.setNoDamageTicks(0);
-        player.damage(0.01, shooter);
+        if (projectile instanceof Arrow || projectile instanceof FishHook) {
+            damaged.setNoDamageTicks(0);
+        }
 
-        Tasks.executeLater(getManager(), 1L, () -> {
-            if (!player.isOnline()) return;
-            applyProjectileKB(player, shooter);
-        });
-    }
+        if (projectile instanceof FishHook) {
+            rodHit.add(damaged.getUniqueId());
+            Tasks.executeLater(getManager(), 2L, () -> rodHit.remove(damaged.getUniqueId()));
+            projectile.remove();
+        }
 
-    @EventHandler
-    public void onRodHit(PlayerFishEvent e) {
-        if (e.getState() != PlayerFishEvent.State.CAUGHT_ENTITY) return;
-        if (!(e.getCaught() instanceof Player damaged)) return;
+        damaged.damage(0.01, shooter);
 
-        Player attacker = e.getPlayer();
-        ProfileManager p = profile();
-
-        damaged.setNoDamageTicks(0);
-        damaged.damage(0.01, attacker);
-        rodHit.add(damaged.getUniqueId());
-        e.getHook().remove();
-
-        Tasks.executeLater(getManager(), 2L, () -> rodHit.remove(damaged.getUniqueId()));
         Tasks.executeLater(getManager(), 1L, () -> {
             if (!damaged.isOnline()) return;
-
-            Vector velocity = calculateKB(
-                    damaged, attacker,
-                    p.rodKbHorizontal,
-                    p.rodKbVertical,
-                    p.rodKbVerticalLimit
+            damaged.setVelocity(calculateKB(damaged, shooter,
+                    projectile instanceof FishHook ? profile().rodKbHorizontal : getInstance().getProfileManager().projKbHorizontal,
+                    projectile instanceof FishHook ? profile().rodKbVertical : getInstance().getProfileManager().projKbVertical,
+                    projectile instanceof FishHook ? profile().rodKbVerticalLimit : getInstance().getProfileManager().projKbVerticalLimit)
             );
-            if (damaged == attacker) return;
-            damaged.setVelocity(velocity);
         });
-    }
-
-    private void applyProjectileKB(Player damaged, Player shooter) {
-        ProfileManager p = profile();
-        damaged.setVelocity(calculateKB(
-                damaged, shooter,
-                p.projKbHorizontal,
-                p.projKbVertical,
-                p.projKbVerticalLimit
-        ));
     }
 
     private Vector calculateKB(Player damaged, Player attacker, double horizontal, double vertical, double verticalLimit) {
@@ -187,11 +187,6 @@ public class ProyectileListener extends Module<ListenerManager> {
         if (velocity.getY() > verticalLimit) velocity.setY(verticalLimit);
 
         return velocity;
-    }
-
-    private void applyLegacyPearl(Player player, EnderPearl pearl, double speed, double gravity) {
-        pearl.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(speed));
-        applyGravity(pearl, gravity, 0.03);
     }
 
     /**
