@@ -16,7 +16,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
 
@@ -29,7 +28,6 @@ import java.util.*;
  */
 public class ProyectileListener extends Module<ListenerManager> {
 
-    private final Set<UUID> rodHit = new HashSet<>();
     private final Map<Integer, UUID> hiddenHooks = new HashMap<>();
 
     private static final Set<String> ROD_SOUNDS = Set.of(
@@ -46,10 +44,6 @@ public class ProyectileListener extends Module<ListenerManager> {
         return getInstance().getProfileManager();
     }
 
-    /**
-     * Intercepta los sonidos de la caña de pescar y los reemplaza
-     * por el sonido de snowball para el jugador que lo recibe.
-     */
     private void cancelRodSounds() {
         ProtocolLibrary.getProtocolManager().addPacketListener(
                 new PacketAdapter(getInstance(), ListenerPriority.NORMAL,
@@ -103,8 +97,13 @@ public class ProyectileListener extends Module<ListenerManager> {
 
     @EventHandler
     public void onVelocity(PlayerVelocityEvent e) {
-        if (!rodHit.contains(e.getPlayer().getUniqueId())) return;
-        e.setCancelled(true);
+        Player player = e.getPlayer();
+        for (Entity entity : player.getWorld().getEntitiesByClass(FishHook.class)) {
+            if (entity instanceof FishHook hook && hook.getHookedEntity() == player) {
+                e.setCancelled(true);
+                break;
+            }
+        }
     }
 
     @EventHandler
@@ -114,6 +113,7 @@ public class ProyectileListener extends Module<ListenerManager> {
 
         switch (entity) {
             case EnderPearl pearl -> {
+                pearl.teleport(player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(0.16)));
                 pearl.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(profile().pearlSpeed));
                 applyGravity(pearl, profile().pearlGravity, 0.03);
             }
@@ -146,24 +146,25 @@ public class ProyectileListener extends Module<ListenerManager> {
         if (!(projectile.getShooter() instanceof Player shooter)) return;
         if (damaged == shooter) return;
 
-        if (projectile instanceof Arrow || projectile instanceof FishHook) {
+        if (projectile instanceof Arrow) {
             damaged.setNoDamageTicks(0);
+            return;
         }
 
         if (projectile instanceof FishHook) {
-            rodHit.add(damaged.getUniqueId());
-            Tasks.executeLater(getManager(), 2L, () -> rodHit.remove(damaged.getUniqueId()));
-            projectile.remove();
+            damaged.setNoDamageTicks(0);
+            hiddenHooks.put(projectile.getEntityId(), damaged.getUniqueId());
+            Tasks.execute(getManager(), () -> hiddenHooks.remove(projectile.getEntityId()));
         }
 
         damaged.damage(0.01, shooter);
 
-        Tasks.executeLater(getManager(), 1L, () -> {
+        Tasks.execute(getManager(), () -> {
             if (!damaged.isOnline()) return;
             damaged.setVelocity(calculateKB(damaged, shooter,
-                    projectile instanceof FishHook ? profile().rodKbHorizontal : getInstance().getProfileManager().projKbHorizontal,
-                    projectile instanceof FishHook ? profile().rodKbVertical : getInstance().getProfileManager().projKbVertical,
-                    projectile instanceof FishHook ? profile().rodKbVerticalLimit : getInstance().getProfileManager().projKbVerticalLimit)
+                    projectile instanceof FishHook ? profile().rodKbHorizontal : profile().projKbHorizontal,
+                    projectile instanceof FishHook ? profile().rodKbVertical : profile().projKbVertical,
+                    projectile instanceof FishHook ? profile().rodKbVerticalLimit : profile().projKbVerticalLimit)
             );
         });
     }
@@ -181,7 +182,11 @@ public class ProyectileListener extends Module<ListenerManager> {
         Vector velocity  = damaged.getVelocity();
 
         velocity.setX(velocity.getX() / 2 - dx / magnitude * horizontal);
-        velocity.setY(velocity.getY() / 2 + vertical);
+
+        if (damaged.isOnGround()) { // Esto previene que los proyectiles hagan subir infinitamente al jugador, Fix de mierda pero deberia de andar
+            velocity.setY(velocity.getY() / 2 + vertical);
+        }
+
         velocity.setZ(velocity.getZ() / 2 - dz / magnitude * horizontal);
 
         if (velocity.getY() > verticalLimit) velocity.setY(verticalLimit);
