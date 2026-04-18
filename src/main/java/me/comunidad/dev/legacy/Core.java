@@ -11,7 +11,6 @@ import me.comunidad.dev.legacy.framework.extra.Configs;
 import me.comunidad.dev.legacy.framework.menu.MenuManager;
 import me.comunidad.dev.legacy.module.lang.LangManager;
 import me.comunidad.dev.legacy.module.listener.ListenerManager;
-import me.comunidad.dev.legacy.module.placeholder.PlaceholderHook;
 import me.comunidad.dev.legacy.utils.Logger;
 import me.comunidad.dev.legacy.utils.configs.ConfigYML;
 import me.comunidad.dev.legacy.utils.extra.DecimalFormat;
@@ -36,7 +35,6 @@ public final class Core extends JavaPlugin {
 
     // Managers
     private PromptManager promptManager;
-    private PlaceholderHook placeholderHook;
     private MenuManager menuManager;
     private ListenerManager listenerManager;
     private LangManager langManager;
@@ -56,8 +54,6 @@ public final class Core extends JavaPlugin {
                 .create();
 
         (this.configsObject = new Configs()).load(this);
-
-        this.placeholderHook = new PlaceholderHook(this);
         this.menuManager = new MenuManager(this);
         this.promptManager = new PromptManager(this);
         this.profileManager = new ProfileManager(this);

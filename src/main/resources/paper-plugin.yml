@@ -4,9 +4,6 @@ main: me.comunidad.dev.legacy.Core
 api-version: '1.21'
 dependencies:
   server:
-    PlaceholderAPI:
-      load: BEFORE
-      required: false
     ProtocolLib:
       load: BEFORE
       required: true

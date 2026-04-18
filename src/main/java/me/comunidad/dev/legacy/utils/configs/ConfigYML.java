@@ -124,7 +124,7 @@ public class ConfigYML extends YamlConfiguration {
         if (cache != null) {
             if (sender == null || !(sender instanceof Player)) return cache;
 
-            return instance.getPlaceholderHook().replace((Player) sender, cache);
+            return cache;
         } else {
             if (!super.contains(path)) {
                 return CC.t("&c" + file.getName() + " » " + path);
@@ -132,7 +132,7 @@ public class ConfigYML extends YamlConfiguration {
 
             String toCache = CC.t(super.getString(path));
             map.put(path, toCache);
-            return sender != null && sender instanceof Player ? instance.getPlaceholderHook().replace((Player) sender, toCache) : toCache;
+            return toCache;
         }
     }
 
