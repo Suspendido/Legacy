@@ -113,6 +113,7 @@ public enum Lang {
 
     // Exploit listener
     EXPLOIT_INVALID_PEARL("messages.exploit.invalid-pearl", "&cInvalid Pearl Location"),
+    PEARL_REFUNDED("messages.exploit.pearl-refunded", "&c(!) Your pearl was refunded"),
 
     // ManageCombatMenu
     MANAGE_CREATE_PROFILE_NAME ("menus.manage.create.name", "&a&l+ Create Profile"),
@@ -127,7 +128,64 @@ public enum Lang {
     CREATE_PROFILE_PROMPT("menus.create-profile.prompt", "&eType the profile name in chat.\n&7Type &fcancel &7to abort."),
     CREATE_PROFILE_CANCELLED("menus.create-profile.cancelled", "&cProfile creation cancelled."),
     CREATE_PROFILE_EXISTS("menus.create-profile.exists", "&cA profile with id &f{0} &calready exists."),
-    CREATE_PROFILE_CREATED("menus.create-profile.created", "&aProfile &f{0} &acreated successfully.");
+    CREATE_PROFILE_CREATED("menus.create-profile.created", "&aProfile &f{0} &acreated successfully."),
+
+    // Knockback command
+    KB_COMMAND_USAGE("commands.knockback.usage", "&6&lKnockback Profile Commands:\n&e/knockback create <name> &7- Create a new profile\n&e/knockback delete <name> &7- Delete a profile\n&e/knockback list &7- List all profiles\n&e/knockback set <name> &7- Set active profile\n&e/knockback view [name] &7- View profile values\n&e/knockback edit <name> <value> <newValue> &7- Edit profile value"),
+    KB_CREATE_USAGE("commands.knockback.create.usage", "&eUsage: /knockback create <profileName>"),
+    KB_CREATE_INVALID_NAME("commands.knockback.create.invalid-name", "&cProfile name cannot contain dots or spaces!"),
+    KB_CREATE_EXISTS("commands.knockback.create.exists", "&cA profile with that name already exists!"),
+    KB_CREATE_SUCCESS("commands.knockback.create.success", "&aProfile '{0}' created successfully!"),
+
+    KB_DELETE_USAGE("commands.knockback.delete.usage", "&eUsage: /knockback delete <profileName>"),
+    KB_DELETE_NOT_FOUND("commands.knockback.delete.not-found", "&cProfile '{0}' does not exist!"),
+    KB_DELETE_ACTIVE("commands.knockback.delete.active", "&cCannot delete the active profile! Switch to another profile first."),
+    KB_DELETE_LAST("commands.knockback.delete.last", "&cCannot delete the last profile! Create another one first."),
+    KB_DELETE_SUCCESS("commands.knockback.delete.success", "&aProfile '{0}' deleted successfully!"),
+
+    KB_LIST_USAGE("commands.knockback.list.usage", "&eUsage: /knockback list"),
+    KB_LIST_NONE("commands.knockback.list.none", "&cNo profiles found! Use '/knockback create <name>' to create one."),
+    KB_LIST_TITLE("commands.knockback.list.title", "&6&lKnockback Profiles:"),
+    KB_LIST_ACTIVE("commands.knockback.list.active", "&a[ACTIVE] "),
+    KB_LIST_INACTIVE("commands.knockback.list.inactive", "&7"),
+    KB_LIST_TOTAL("commands.knockback.list.total", "&eTotal profiles: {0}"),
+
+    KB_SET_USAGE("commands.knockback.set.usage", "&eUsage: /knockback set <profileName>"),
+    KB_SET_NOT_FOUND("commands.knockback.set.not-found", "&cProfile '{0}' does not exist!"),
+    KB_SET_ALREADY_ACTIVE("commands.knockback.set.already-active", "&eProfile '{0}' is already active!"),
+    KB_SET_SUCCESS("commands.knockback.set.success", "&aProfile '{0}' is now active!"),
+
+    KB_VIEW_USAGE("commands.knockback.view.usage", "&eUsage: /knockback view [profileName]"),
+    KB_VIEW_NO_ACTIVE("commands.knockback.view.no-active", "&cNo active profile found!"),
+    KB_VIEW_NOT_FOUND("commands.knockback.view.not-found", "&cProfile '{0}' does not exist!"),
+    KB_VIEW_TITLE("commands.knockback.view.title", "&6&lProfile: {0} {1}"),
+    KB_VIEW_SEPARATOR("commands.knockback.view.separator", "&7&m-----------------------------"),
+    KB_VIEW_KB_VALUES("commands.knockback.view.kb-values", "&eKnockback Values:"),
+    KB_VIEW_PROJECTILE_KB("commands.knockback.view.projectile-kb", "&eProjectile Knockback:"),
+    KB_VIEW_ROD_KB("commands.knockback.view.rod-kb", "&eRod Knockback:"),
+    KB_VIEW_HORIZONTAL("commands.knockback.view.horizontal", "&7  Horizontal: &f{0}"),
+    KB_VIEW_VERTICAL("commands.knockback.view.vertical", "&7  Vertical: &f{0}"),
+    KB_VIEW_VERTICAL_LIMIT("commands.knockback.view.vertical-limit", "&7  Vertical Limit: &f{0}"),
+    KB_VIEW_EXTRA_VERTICAL("commands.knockback.view.extra-vertical", "&7  Extra Vertical: &f{0}"),
+    KB_VIEW_EXTRA_HORIZONTAL("commands.knockback.view.extra-horizontal", "&7  Extra Horizontal: &f{0}"),
+    KB_VIEW_SPRINT_MODIFIER("commands.knockback.view.sprint-modifier", "&7  Sprint Modifier: &f{0}"),
+    KB_VIEW_SPRINT_RESET_MOD("commands.knockback.view.sprint-reset-mod", "&7  Sprint Reset Modifier: &f{0}"),
+    KB_VIEW_HORIZONTAL_LIMIT("commands.knockback.view.horizontal-limit", "&7  Horizontal Limit: &f{0}"),
+    KB_VIEW_FRICTION("commands.knockback.view.friction", "&7  Friction: &f{0}"),
+    KB_VIEW_ENABLED("commands.knockback.view.enabled", "&7  Enabled: &f{0}"),
+    KB_VIEW_GROUND_CHECK("commands.knockback.view.ground-check", "&7  Ground Check: &f{0}"),
+    KB_VIEW_DYNAMIC_LIMIT("commands.knockback.view.dynamic-limit", "&7  Dynamic Limit: &f{0}"),
+    KB_VIEW_LIMIT_HORIZONTAL("commands.knockback.view.limit-horizontal", "&7  Limit Horizontal: &f{0}"),
+    KB_VIEW_ONE_POINT_SEVEN("commands.knockback.view.one-point-seven", "&7  One Point Seven: &f{0}"),
+
+    KB_EDIT_USAGE("commands.knockback.edit.usage", "&eUsage: /knockback edit <profileName> <value> <newValue>"),
+    KB_EDIT_NOT_FOUND("commands.knockback.edit.not-found", "&cProfile '{0}' does not exist!"),
+    KB_EDIT_VALUE_NOT_FOUND("commands.knockback.edit.value-not-found", "&cValue '{0}' does not exist!"),
+    KB_EDIT_AVAILABLE_VALUES("commands.knockback.edit.available-values", "&eAvailable values: {0}"),
+    KB_EDIT_UNSUPPORTED_TYPE("commands.knockback.edit.unsupported-type", "&cUnsupported value type for '{0}'"),
+    KB_EDIT_INVALID_FORMAT("commands.knockback.edit.invalid-format", "&cInvalid value format! Expected: {0}"),
+    KB_EDIT_SUCCESS("commands.knockback.edit.success", "&aSet {0} to {1} for profile '{2}'"),
+    KB_EDIT_RELOADED("commands.knockback.edit.reloaded", "&eProfile reloaded since it's currently active!");
 
     public final String path;
     public final String fallback;
