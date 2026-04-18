@@ -29,8 +29,8 @@ public class PearlEditorMenu extends Menu {
 
     private static final Object[][] FIELDS = {
             {"Damage on Land", "damage", 0.5, 0.0, 20.0, Material.ENDER_PEARL, false, false},
-            {"Speed on Launch", "speed", 0.005, 0.0, 5, Material.SUGAR, false, false},
-            {"Pearl Gravity", "gravity", 0.005, 0.0, 1, Material.FEATHER, false, false},
+            {"Speed on Launch", "speed", 0.5, 0.0, 5, Material.SUGAR, false, false},
+            {"Pearl Gravity", "gravity", 0.5, 0.0, 1, Material.FEATHER, false, false},
             {"Cooldown (ticks)", "cooldown-ticks", 1, 0, 2000, Material.CLOCK, true,  false},
     };
 
@@ -101,9 +101,9 @@ public class PearlEditorMenu extends Menu {
                         getProfilesConfig().set(path, cur == 1 ? 0 : 1);
                     } else {
                         double delta = switch (e.getClick()) {
-                            case LEFT ->  step;
+                            case LEFT -> step;
                             case RIGHT -> -step;
-                            case SHIFT_LEFT ->  step * 5;
+                            case SHIFT_LEFT -> step * 5;
                             case SHIFT_RIGHT -> -step * 5;
                             default -> 0;
                         };
