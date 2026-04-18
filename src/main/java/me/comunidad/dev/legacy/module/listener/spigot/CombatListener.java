@@ -37,7 +37,6 @@ public class CombatListener extends Module<ListenerManager> {
     private final Set<UUID> sweepPrimedAttackers = new HashSet<>();
     private final PaperSwordBlockingEvent swordBlocking;
     private final EntityDamageEvent.DamageCause sweepCause;
-    private static final int DEFAULT_NO_DAMAGE_TICKS = 20;
 
     public CombatListener(ListenerManager manager) {
         super(manager);
@@ -288,7 +287,7 @@ public class CombatListener extends Module<ListenerManager> {
 
     @EventHandler
     public void onPlayerQuitAttackDelay(PlayerQuitEvent e) {
-        e.getPlayer().setMaximumNoDamageTicks(DEFAULT_NO_DAMAGE_TICKS);
+        e.getPlayer().setMaximumNoDamageTicks(20);
     }
 
     @EventHandler
