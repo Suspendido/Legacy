@@ -22,7 +22,7 @@ dependencies {
     implementation("org.mongodb:mongo-java-driver:3.12.10")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("org.projectlombok:lombok:1.18.38")
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.53-stable")
 }
 
