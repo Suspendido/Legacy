@@ -22,7 +22,7 @@ dependencies {
     implementation("org.mongodb:mongo-java-driver:3.12.14")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("org.projectlombok:lombok:1.18.46")
-    compileOnly("me.clip:placeholderapi:2.12.2")
+    compileOnly("me.clip:placeholderapi:2.12.3")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")}
 
 shadowJar {
